@@ -163,3 +163,4 @@ Modifier hierarchy for consistent muscle memory across tools:
 - Review Linux firewall defaults; currently disabled by default.
 - Consider avoiding `bun install -g` in activation scripts; move to declarative packages or pin versions.
 - README: reconcile formatter/tool list (mentions `nixfmt-rfc-style` but config installs `nixfmt`).
+- Homebrew-to-Nix review (macOS): periodically re-check `gitui` and `yt-dlp` in nixpkgs and move back to Nix packages when stable.

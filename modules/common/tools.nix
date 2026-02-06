@@ -23,6 +23,7 @@ in {
 
     programs.yazi = enabled {
       enableZshIntegration = true;
+      shellWrapperName = "y";
     };
   }];
 }

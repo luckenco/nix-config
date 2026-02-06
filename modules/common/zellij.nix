@@ -26,7 +26,7 @@ in {
 
             tab focus=true {
                 pane split_direction="vertical" {
-                    pane command="claude" size="30%"
+                    pane command="codex" size="30%"
                     pane focus=true size="42%"
                     pane size="28%" split_direction="horizontal" {
                         pane command="bash" {

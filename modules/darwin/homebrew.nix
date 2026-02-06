@@ -16,6 +16,7 @@ in {
       "mole"
       "opencode"  # Coding agent - homebrew updates faster than nixpkgs
       "twilio"
+      "yt-dlp"  # nixpkgs pull-in currently broken on darwin via python jeepney/secretstorage chain
     ];
 
     casks = [

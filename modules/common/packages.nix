@@ -23,7 +23,6 @@
 
     # Media
     ffmpeg
-    yt-dlp
 
     # HTTP & JSON
     xh
