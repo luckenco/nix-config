@@ -153,10 +153,10 @@ Modifier hierarchy for consistent muscle memory across tools:
 - llm
 
 ### macOS Apps (via nix)
-- Raycast, Anki, Telegram, Zotero, OrbStack
+- Raycast, Anki, Telegram, OrbStack
 
 ### macOS Apps (via Homebrew)
-- Figma, ProtonVPN, Sublime Text
+- Figma, ProtonVPN, Sublime Text, Zotero
 
 ## TODO
 - VPS: ensure `morpheus` has a password or passwordless sudo to avoid lockout when SSH password auth and root login are disabled.

@@ -1,66 +1,69 @@
-{ pkgs, ... }: {
-  environment.systemPackages = with pkgs; [
-    # Core utilities
-    stow
-    ripgrep
-    eza
-    fd
-    gh
-    htop
-    tree
-    jq
+{ lib, pkgs, ... }: {
+  environment.systemPackages = with pkgs;
+    [
+      # Core utilities
+      stow
+      ripgrep
+      eza
+      fd
+      gh
+      htop
+      tree
+      jq
 
-    # File viewers
-    yazi
-    glow
-    bat
-    jless
+      # File viewers
+      yazi
+      glow
+      bat
+      jless
 
-    # Dev tools
-    just
-    tokei
-    nix-output-monitor
+      # Dev tools
+      just
+      tokei
+      nix-output-monitor
 
-    # Media
-    ffmpeg
+      # Media
+      ffmpeg
 
-    # HTTP & JSON
-    xh
-    jnv
+      # HTTP & JSON
+      xh
+      jnv
 
-    # AI/LLM
-    # codex  # TODO: upstream build broken (rama-boring-sys fails)
-    llm
+      # AI/LLM
+      # codex  # TODO: upstream build broken (rama-boring-sys fails)
+      llm
 
-    # Documentation
-    tealdeer
+      # Documentation
+      tealdeer
 
-    # Security
-    gnupg
+      # Security
+      gnupg
 
-    # Languages & runtimes
-    nodejs
-    bun
-    uv
-    rustup
-    bacon
-    gcc
+      # Languages & runtimes
+      nodejs
+      bun
+      uv
+      rustup
+      bacon
+      gcc
 
-    # LSP and formatters
-    nil
-    nixfmt
-    lua-language-server
-    stylua
-    ruff
-    ty
-    typescript-go
-    biome
+      # LSP and formatters
+      nil
+      nixfmt
+      lua-language-server
+      stylua
+      ruff
+      ty
+      typescript-go
+      biome
 
-    # System info
-    fastfetch
+      # System info
+      fastfetch
 
-    # CLIs
-    awscli2
-    azure-cli
-  ];
+      # CLIs
+      awscli2
+    ]
+    ++ lib.optionals (!pkgs.stdenv.isDarwin) [
+      azure-cli
+    ];
 }

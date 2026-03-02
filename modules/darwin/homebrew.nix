@@ -10,6 +10,7 @@ in {
 
     # TODO: Periodically check if these become available/fixed in nixpkgs
     brews = [
+      "azure-cli"  # nixpkgs build currently failing on darwin
       "gitui"  # Broken in nixpkgs on aarch64-darwin
       "livekit-cli"
       "mas"
@@ -31,6 +32,7 @@ in {
       "spotify"
       "sublime-text"
       "telegram"
+      "zotero"
     ];
 
     masApps = {
