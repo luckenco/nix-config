@@ -6,5 +6,5 @@
   ];
   networking.networkmanager.dns = "none";
 
-  networking.firewall.enable = lib.mkDefault false;
+  networking.firewall.enable = lib.mkDefault true;
 }

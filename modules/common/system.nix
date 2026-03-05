@@ -11,5 +11,26 @@ in {
 
     isDesktop = mkConst (config.type == "desktop");
     isServer  = mkConst (config.type == "server");
+
+    my = {
+      machine = {
+        hostName = mkValue config.networking.hostName;
+        userName = mkValue (
+          if config.isDarwin then
+            (config.system.primaryUser or "user")
+          else
+            "morpheus"
+        );
+        homeDir = mkValue (
+          if config.isDarwin then
+            "/Users/${config.my.machine.userName}"
+          else
+            "/home/${config.my.machine.userName}"
+        );
+        repoPath = mkValue "${config.my.machine.homeDir}/code/nix-cfg/nixos-config";
+      };
+
+      secrets.enable = mkValue false;
+    };
   };
 }

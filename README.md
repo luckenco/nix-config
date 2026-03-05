@@ -1,166 +1,90 @@
-# NixOS & nix-darwin Configuration
+# NixOS + nix-darwin Configuration
 
-Multi-platform Nix configuration for NixOS (Linux) and nix-darwin (macOS) using flakes.
+Multi-host Nix flake for Linux (`nixos`) and macOS (`nix-darwin`), with shared Home Manager modules.
 
-## Structure
+## Repository layout
 
-```
+```text
 .
-├── flake.nix              # Flake with dynamic host discovery
-├── lib/                   # Custom library functions
-│   ├── default.nix        # Library aggregator
-│   ├── filesystem.nix     # collectNix utility
-│   ├── option.nix         # mkConst, mkValue helpers
-│   ├── system.nix         # nixosSystem', darwinSystem' wrappers
-│   └── values.nix         # enabled, disabled helpers
+├── flake.nix
+├── flake.lock
+├── hosts/
+│   ├── mbp/
+│   ├── vm/
+│   └── vps/
+├── lib/
 ├── modules/
-│   ├── common/            # Cross-platform system modules
-│   ├── linux/             # NixOS-specific modules
-│   └── darwin/            # nix-darwin-specific modules
-├── home/
-│   ├── common/            # Cross-platform home-manager modules
-│   ├── linux/             # Linux-specific home modules
-│   └── darwin/            # macOS-specific home modules
-└── hosts/
-    ├── vm/                # NixOS VM configuration
-    ├── vps/               # NixOS VPS configuration
-    └── mbp/               # macOS MacBook Pro configuration
+│   ├── common/
+│   ├── linux/
+│   └── darwin/
+└── keys/
 ```
 
-## Usage
+## Prerequisites
 
-This flake uses experimental Nix features (`pipe-operators`). These must be enabled before the flake can be evaluated.
+This flake uses `pipe-operators`, so Nix experimental features must include:
 
-**Option 1: Global config (recommended)**
 ```sh
 mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes pipe-operators" > ~/.config/nix/nix.conf
-```
-
-**Option 2: Pass flag each time**
-```sh
-nix --extra-experimental-features pipe-operators <command>
-# or with nh
-nh darwin build . -- --extra-experimental-features pipe-operators
-```
-
-### macOS (nix-darwin)
-
-**First time setup:**
-```sh
-# Install nix (if not already installed)
-curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-
-# Enable experimental features (required to evaluate flake)
-mkdir -p ~/.config/nix
-echo "experimental-features = nix-command flakes pipe-operators" > ~/.config/nix/nix.conf
-
-# Clone and apply
-git clone https://github.com/caluckenbach/nixos-config.git
-cd nixos-config
-nix run nix-darwin -- switch --flake .#mbp
-```
-
-**Rebuild after changes (nh includes pretty output via nom):**
-```sh
-nh darwin switch .
-# or build only
-nh darwin build .
-```
-
-**Update Homebrew packages (managed via nix-homebrew):**
-```sh
-nix flake update homebrew-core homebrew-cask
-nh darwin switch .
-```
-
-### NixOS (Linux)
-
-**Rebuild system:**
-```sh
-nh os switch .
-# or build only
-nh os build .
 ```
 
 ## Hosts
 
 | Host | Platform | Type | User |
 |------|----------|------|------|
-| `mbp` | macOS (aarch64-darwin) | Desktop | cal |
-| `vm` | NixOS (aarch64-linux) | Desktop | morpheus |
-| `vps` | NixOS (x86_64-linux) | Server | morpheus |
+| `mbp` | `aarch64-darwin` | desktop | `cal` |
+| `vm` | `aarch64-linux` | desktop | `morpheus` |
+| `vps` | `x86_64-linux` | server | `morpheus` |
 
-## What's Included
+## Usage
 
-### System
-- Nix flakes with automatic host discovery
-- Home Manager integration
-- Platform-specific defaults (macOS: Dock, Finder, keyboard settings)
-- Homebrew integration for macOS casks not in nixpkgs
+### macOS (`nix-darwin`)
 
-### Shell & Terminal
-- Zsh with autosuggestions, syntax highlighting
-- Starship prompt
-- Ghostty terminal
-- Zellij multiplexer with zjstatus
+First install:
 
-## Keybindings
+```sh
+nix run nix-darwin -- switch --flake .#mbp
+```
 
-Modifier hierarchy for consistent muscle memory across tools:
-- **Ctrl** = Pane operations (Zellij)
-- **Cmd** = Tab operations (Ghostty)
-- **+ Shift** = Destructive/moving operations
-- **+ Alt** = Resize operations
+Daily rebuilds:
 
-### Zellij (Panes)
+```sh
+nh darwin switch .
+nh darwin build .
+```
 
-| Action | Keybind |
-|--------|---------|
-| Navigate panes | `Ctrl+h/j/k/l` |
-| Move panes | `Ctrl+Shift+h/j/k/l` |
-| Resize panes | `Ctrl+Alt+h/j/k/l` |
-| New pane down | `Ctrl+p d` |
-| New pane right | `Ctrl+p r` |
-| Close pane | `Ctrl+p x` |
-| Toggle floating | `Alt+f` |
+Update Homebrew flakes and re-apply:
 
-### Ghostty (Tabs)
+```sh
+nix flake update homebrew-core homebrew-cask
+nh darwin switch .
+```
 
-| Action | Keybind |
-|--------|---------|
-| New tab | `Cmd+t` |
-| Close tab | `Cmd+w` |
-| Previous tab | `Cmd+Shift+[` |
-| Next tab | `Cmd+Shift+]` |
+### Linux (`nixos`)
 
-### Development
-- **Editors:** Neovim, Helix, Zed (macOS)
-- **VCS:** Git, Jujutsu, lazygit, gitui
-- **Languages:** Rust (rustup, bacon), Python (uv, ruff), Bun, Lua
-- **LSP:** nil, lua-language-server, ruff
-- **Formatters:** nixfmt-rfc-style, stylua, ty
+Rebuild:
 
-### Tools
-- eza, bat, ripgrep, fd, fzf, zoxide
-- yazi, glow, jless, jnv
-- ffmpeg, yt-dlp, xh, tokei
-- nix-output-monitor (nom)
+```sh
+nh os switch .
+nh os build .
+```
 
-### AI/LLM
-- claude-code
-- opencode
-- llm
+## What is configured
 
-### macOS Apps (via nix)
-- Raycast, Anki, Telegram, OrbStack
+- Shared modules for shell, tooling, editor defaults, git, theme, and terminal UX
+- Linux modules for networking, locale, nix-ld, desktop/session behavior, and Linux-only packages
+- Darwin modules for defaults, Homebrew integration, AeroSpace, GPG, Zed, and Darwin-specific packages
+- Flake host auto-discovery via `hosts/*`
 
-### macOS Apps (via Homebrew)
-- Figma, ProtonVPN, Sublime Text, Zotero
+## Operational notes
 
-## TODO
-- VPS: ensure `morpheus` has a password or passwordless sudo to avoid lockout when SSH password auth and root login are disabled.
-- Review Linux firewall defaults; currently disabled by default.
-- Consider avoiding `bun install -g` in activation scripts; move to declarative packages or pin versions.
-- README: reconcile formatter/tool list (mentions `nixfmt-rfc-style` but config installs `nixfmt`).
-- Homebrew-to-Nix review (macOS): periodically re-check `gitui` and `yt-dlp` in nixpkgs and move back to Nix packages when stable.
+- zsh customization is managed through Home Manager (`programs.zsh`), not `/etc/zshrc` overrides.
+- Linux firewall defaults to enabled in shared Linux networking config.
+- Darwin Homebrew is managed declaratively via `nix-homebrew` and `homebrew.*` settings.
+- `ty` in Zed config is pinned to the Nix package path (`${pkgs.ty}/bin/ty`).
+
+## Known follow-ups
+
+- `hosts/vps/hardware-configuration.nix` is still a placeholder and must be replaced with real hardware config before production deployment.
+- Re-check Homebrew fallbacks (`gitui`, `yt-dlp`, `azure-cli`) periodically and move back to nixpkgs when stable on Darwin.

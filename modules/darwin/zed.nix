@@ -1,4 +1,4 @@
-{ config, ... }: {
+{ config, pkgs, ... }: {
   home-manager.sharedModules = [{
     # Zed editor configuration
     xdg.configFile."zed/settings.json".text = builtins.toJSON (with config.theme; {
@@ -43,7 +43,7 @@
         rust_analyzer.initialization_options.checkOnSave.command = "clippy";
         ty = {
           binary = {
-            path      = "/Users/cal/.local/bin/ty";
+            path      = "${pkgs.ty}/bin/ty";
             arguments = [ "server" ];
           };
         };

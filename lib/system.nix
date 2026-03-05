@@ -36,6 +36,7 @@ in {
     modules = [
       module
       overlayModule
+      inputs.sops-nix.nixosModules.sops
 
       {
         home-manager.sharedModules = inputHomeModules;
@@ -51,6 +52,7 @@ in {
     modules = [
       module
       overlayModule
+      inputs.sops-nix.darwinModules.sops
 
       {
         home-manager.sharedModules = inputHomeModules;

@@ -50,8 +50,11 @@ in {
         ns = "nom shell";
 
       } // lib.optionalAttrs darwinConfig.isDarwin {
-        # Full rebuild with flake update + homebrew upgrade
-        rebuild = "ulimit -n 4096 && nix flake update --flake ~/code/nix-cfg/nixos-config && sudo nix run nix-darwin -- switch --flake ~/code/nix-cfg/nixos-config#mbp --option extra-experimental-features pipe-operators |& nom";
+        # Deterministic rebuild (no flake update)
+        rebuild = "ulimit -n 4096 && nh darwin switch ${darwinConfig.my.machine.repoPath}";
+
+        # Explicit update + rebuild
+        rebuild-update = "ulimit -n 4096 && nix flake update --flake ${darwinConfig.my.machine.repoPath} && nh darwin switch ${darwinConfig.my.machine.repoPath}";
       };
 
       initContent = ''
