@@ -82,6 +82,7 @@ nh os build .
 - Linux modules for networking, locale, nix-ld, desktop/session behavior, and Linux-only packages
 - Darwin modules for defaults, Homebrew integration, AeroSpace, GPG, Zed, and Darwin-specific packages
 - Flake host auto-discovery via `hosts/*`
+- Expanded macOS defaults for developer UX (input autocorrect off, faster UI animations, Finder and Dock tuning, screenshot path/type, trackpad behavior, lock/login defaults)
 
 ## Operational notes
 
@@ -91,6 +92,7 @@ nh os build .
 - Homebrew auto-update/upgrade/cleanup are disabled during activation for deterministic, non-disruptive rebuilds.
 - `ty` in Zed config is pinned to the Nix package path (`${pkgs.ty}/bin/ty`).
 - `my.secrets.enable` defaults to `false`; enable it only after adding an age key at `~/.config/sops/age/keys.txt`.
+- Screenshots are configured to `${homeDir}/Pictures/Screenshots` and that directory is created during activation.
 
 ## Known follow-ups
 
