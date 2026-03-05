@@ -50,6 +50,19 @@ in {
           k   = "normal_mode";
           esc = [ "collapse_selection" "normal_mode" ];
         };
+
+        # Temporary nvim-like motions while transitioning to Helix.
+        keys.normal = {
+          h = [ "collapse_selection" "move_char_left" ];
+          j = [ "collapse_selection" "move_line_down" ];
+          k = [ "collapse_selection" "move_line_up" ];
+          l = [ "collapse_selection" "move_char_right" ];
+          w = [ "collapse_selection" "move_next_word_start" ];
+          b = [ "collapse_selection" "move_prev_word_start" ];
+          e = [ "collapse_selection" "move_next_word_end" ];
+          "0" = [ "collapse_selection" "goto_line_start" ];
+          "$" = [ "collapse_selection" "goto_line_end" ];
+        };
       };
     };
   }];
