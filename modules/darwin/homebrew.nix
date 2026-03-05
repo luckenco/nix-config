@@ -3,9 +3,11 @@
 in {
   homebrew = enabled {
     onActivation = {
-      autoUpdate = true;   # brew update
-      upgrade    = true;   # brew upgrade
-      cleanup    = "zap";
+      # Keep rebuilds deterministic and avoid disruptive cleanup failures.
+      # Do Homebrew upgrades explicitly when desired.
+      autoUpdate = false;
+      upgrade    = false;
+      cleanup    = "none";
     };
 
     # TODO: Periodically check if these become available/fixed in nixpkgs

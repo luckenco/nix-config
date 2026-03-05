@@ -1,6 +1,6 @@
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
-bootstrap:
+bootstrap host="mbp":
   @echo "Bootstrapping nix-darwin..."
   @command -v nix >/dev/null 2>&1 || { echo "Missing nix. Install Nix first."; exit 1; }
   @mkdir -p "$HOME/.config/nix"
@@ -13,5 +13,5 @@ bootstrap:
   @if command -v nh >/dev/null 2>&1; then \
     nh darwin switch .; \
   else \
-    nix run nix-darwin -- switch --flake .#mbp; \
+    nix run nix-darwin -- switch --flake .#{{host}}; \
   fi

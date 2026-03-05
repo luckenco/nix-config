@@ -52,9 +52,11 @@ in {
       } // lib.optionalAttrs darwinConfig.isDarwin {
         # Deterministic rebuild (no flake update)
         rebuild = "ulimit -n 4096 && nh darwin switch ${darwinConfig.my.machine.repoPath}";
+        bootstrap = "cd ${darwinConfig.my.machine.repoPath} && just bootstrap host=${darwinConfig.my.machine.hostName}";
 
         # Explicit update + rebuild
         rebuild-update = "ulimit -n 4096 && nix flake update --flake ${darwinConfig.my.machine.repoPath} && nh darwin switch ${darwinConfig.my.machine.repoPath}";
+        rebuild_update = "ulimit -n 4096 && nix flake update --flake ${darwinConfig.my.machine.repoPath} && nh darwin switch ${darwinConfig.my.machine.repoPath}";
       };
 
       initContent = ''

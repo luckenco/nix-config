@@ -44,20 +44,26 @@ echo "experimental-features = nix-command flakes pipe-operators" > ~/.config/nix
 First install:
 
 ```sh
-nix run nix-darwin -- switch --flake .#mbp
+just bootstrap
+# or explicitly
+just bootstrap host=mbp
 ```
 
 Daily rebuilds:
 
 ```sh
+rebuild
+# equivalent:
 nh darwin switch .
 nh darwin build .
 ```
 
-Update Homebrew flakes and re-apply:
+Update flake inputs and re-apply:
 
 ```sh
-nix flake update homebrew-core homebrew-cask
+rebuild-update
+# equivalent:
+nix flake update
 nh darwin switch .
 ```
 
@@ -82,7 +88,9 @@ nh os build .
 - zsh customization is managed through Home Manager (`programs.zsh`), not `/etc/zshrc` overrides.
 - Linux firewall defaults to enabled in shared Linux networking config.
 - Darwin Homebrew is managed declaratively via `nix-homebrew` and `homebrew.*` settings.
+- Homebrew auto-update/upgrade/cleanup are disabled during activation for deterministic, non-disruptive rebuilds.
 - `ty` in Zed config is pinned to the Nix package path (`${pkgs.ty}/bin/ty`).
+- `my.secrets.enable` defaults to `false`; enable it only after adding an age key at `~/.config/sops/age/keys.txt`.
 
 ## Known follow-ups
 
