@@ -48,9 +48,12 @@
       gcc
 
       # LSP and formatters
+      clang-tools
       nil
       nixfmt
       lua-language-server
+      rust-analyzer
+      pyright
       stylua
       ruff
       ty
