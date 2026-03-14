@@ -15,3 +15,9 @@ bootstrap host="mbp":
   else \
     nix run nix-darwin -- switch --flake .#{{host}}; \
   fi
+
+fmt:
+  @nix fmt .
+
+lint:
+  @nix flake check
