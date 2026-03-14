@@ -52,6 +52,7 @@
       nil
       nixfmt
       lua-language-server
+      astro-language-server
       rust-analyzer
       pyright
       stylua
