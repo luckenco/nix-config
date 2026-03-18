@@ -1,6 +1,13 @@
-{ config, lib, pkgs, ... }: let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
   inherit (lib) mkIf;
-in {
+in
+{
   nix = {
     settings = {
       experimental-features = [
@@ -10,20 +17,29 @@ in {
       ];
       warn-dirty = false;
     };
-  } // (if config.isLinux then {
-    channel.enable = false;
+  }
+  // (
+    if config.isLinux then
+      {
+        channel.enable = false;
 
-    gc = {
-      automatic  = true;
-      options    = "--delete-older-than 7d";
-      dates      = "weekly";
-      persistent = true;
-    };
+        gc = {
+          automatic = true;
+          options = "--delete-older-than 7d";
+          dates = "weekly";
+          persistent = true;
+        };
 
-    settings.trusted-users = [ "root" "@wheel" ];
+        settings.trusted-users = [
+          "root"
+          "@wheel"
+        ];
 
-    optimise.automatic = true;
-  } else {});
+        optimise.automatic = true;
+      }
+    else
+      { }
+  );
 
   environment.systemPackages = with pkgs; [
     nh

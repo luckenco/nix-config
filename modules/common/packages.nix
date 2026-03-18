@@ -1,5 +1,7 @@
-{ lib, pkgs, ... }: {
-  environment.systemPackages = with pkgs;
+{ lib, pkgs, ... }:
+{
+  environment.systemPackages =
+    with pkgs;
     [
       # Core utilities
       stow

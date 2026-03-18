@@ -1,4 +1,5 @@
-{ config, lib, ... }: lib.mkIf config.isDarwin {
+{ config, lib, ... }:
+lib.mkIf config.isDarwin {
   security.pam.services.sudo_local.touchIdAuth = true;
 
   networking.applicationFirewall = {

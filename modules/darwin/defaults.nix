@@ -1,18 +1,20 @@
-{ config, ... }: let
+{ config, ... }:
+let
   homeDir = config.my.machine.homeDir;
-in {
+in
+{
   system.defaults.NSGlobalDomain = {
-    AppleShowAllFiles      = true;
+    AppleShowAllFiles = true;
     AppleShowAllExtensions = true;
 
     # Fast key repeat
     InitialKeyRepeat = 15;
-    KeyRepeat        = 2;
+    KeyRepeat = 2;
 
-    # Developer-friendly text input defaults
-    ApplePressAndHoldEnabled            = false;
-    NSAutomaticCapitalizationEnabled    = false;
-    NSAutomaticDashSubstitutionEnabled  = false;
+    # Enable press-and-hold accent picker.
+    ApplePressAndHoldEnabled = true;
+    NSAutomaticCapitalizationEnabled = false;
+    NSAutomaticDashSubstitutionEnabled = false;
     NSAutomaticPeriodSubstitutionEnabled = false;
     NSAutomaticQuoteSubstitutionEnabled = false;
     NSAutomaticSpellingCorrectionEnabled = false;
@@ -25,27 +27,27 @@ in {
   };
 
   system.defaults.dock = {
-    autohide     = true;
-    showhidden   = true;
+    autohide = true;
+    showhidden = true;
     show-recents = false;
-    mru-spaces   = false;
-    tilesize     = 48;
+    mru-spaces = false;
+    tilesize = 48;
   };
 
   system.defaults.finder = {
-    AppleShowAllExtensions  = true;
-    AppleShowAllFiles       = true;
-    FXPreferredViewStyle    = "Nlsv";
+    AppleShowAllExtensions = true;
+    AppleShowAllFiles = true;
+    FXPreferredViewStyle = "Nlsv";
     _FXShowPosixPathInTitle = true;
-    _FXSortFoldersFirst     = true;
-    ShowPathbar             = true;
-    ShowStatusBar           = true;
-    QuitMenuItem            = true;
+    _FXSortFoldersFirst = true;
+    ShowPathbar = true;
+    ShowStatusBar = true;
+    QuitMenuItem = true;
   };
 
   system.defaults.CustomSystemPreferences."com.apple.desktopservices" = {
     DSDontWriteNetworkStores = true;
-    DSDontWriteUSBStores     = true;
+    DSDontWriteUSBStores = true;
   };
 
   system.defaults.CustomUserPreferences = {
@@ -98,10 +100,5 @@ in {
       TrackpadThreeFingerDrag = true;
     };
   };
-
-  system.activationScripts.ensureScreenshotDir.text = ''
-    mkdir -p "${homeDir}/Pictures/Screenshots"
-  '';
-
   system.stateVersion = 6;
 }

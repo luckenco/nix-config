@@ -1,29 +1,33 @@
-{ lib, ... }: let
+{ lib, ... }:
+let
   inherit (lib) enabled;
-in {
-  home-manager.sharedModules = [{
-    programs.bat = enabled {};
+in
+{
+  home-manager.sharedModules = [
+    {
+      programs.bat = enabled { };
 
-    programs.fzf = enabled {
-      enableZshIntegration = true;
-    };
+      programs.fzf = enabled {
+        enableZshIntegration = true;
+      };
 
-    programs.direnv = enabled {
-      enableZshIntegration = true;
-      nix-direnv.enable    = true;
-    };
+      programs.direnv = enabled {
+        enableZshIntegration = true;
+        nix-direnv.enable = true;
+      };
 
-    programs.zoxide = enabled {
-      enableZshIntegration = true;
-    };
+      programs.zoxide = enabled {
+        enableZshIntegration = true;
+      };
 
-    programs.atuin = enabled {
-      enableZshIntegration = true;
-    };
+      programs.atuin = enabled {
+        enableZshIntegration = true;
+      };
 
-    programs.yazi = enabled {
-      enableZshIntegration = true;
-      shellWrapperName = "y";
-    };
-  }];
+      programs.yazi = enabled {
+        enableZshIntegration = true;
+        shellWrapperName = "y";
+      };
+    }
+  ];
 }

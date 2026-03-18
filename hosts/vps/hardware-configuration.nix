@@ -1,14 +1,24 @@
 # Placeholder - generate this on the Hetzner VPS with:
 #   nixos-generate-config --show-hardware-config
 # Then replace this file with the output.
-{ config, lib, pkgs, modulesPath, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  ...
+}:
 
 {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "virtio_scsi" "sr_mod" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "virtio_scsi"
+    "sr_mod"
+  ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
