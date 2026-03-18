@@ -48,6 +48,7 @@
       rustup
       bacon
       gcc
+      tree-sitter
 
       # LSP and formatters
       clang-tools
