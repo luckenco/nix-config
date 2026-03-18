@@ -76,6 +76,16 @@ nh os switch .
 nh os build .
 ```
 
+## Formatting and linting
+
+```sh
+just fmt
+just lint
+```
+
+- `just fmt` runs `nix fmt .` (powered by `flake.nix` `formatter` output using `nixfmt`).
+- `just lint` runs `nix flake check`.
+
 ## What is configured
 
 - Shared modules for shell, tooling, editor defaults, git, theme, and terminal UX
