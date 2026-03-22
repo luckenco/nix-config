@@ -29,7 +29,7 @@ in
           else
             "/home/${config.my.machine.userName}"
         );
-        repoPath = mkValue "${config.my.machine.homeDir}/code/nix-cfg/nixos-config";
+        repoPath = mkValue "${config.my.machine.homeDir}/Code/nix-config";
       };
 
       secrets.enable = mkValue false;

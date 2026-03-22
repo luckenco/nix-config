@@ -29,6 +29,8 @@ mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes pipe-operators" > ~/.config/nix/nix.conf
 ```
 
+On macOS hosts using Determinate Nix (`nix.enable = false`), the flake also writes the same feature set to `/etc/nix/nix.custom.conf` after a successful rebuild.
+
 ## Hosts
 
 | Host | Platform | Type | User |
@@ -46,7 +48,7 @@ First install:
 ```sh
 just bootstrap
 # or explicitly
-just bootstrap host=mbp
+just bootstrap mbp
 ```
 
 Daily rebuilds:

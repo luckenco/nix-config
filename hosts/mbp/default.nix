@@ -22,7 +22,7 @@ lib.darwinSystem' (
       hostName = "mbp";
       userName = "cal";
       homeDir = "/Users/cal";
-      repoPath = "/Users/cal/code/nix-cfg/nixos-config";
+      repoPath = "/Users/cal/Code/nix-config";
     };
 
     networking.hostName = machine.hostName;

@@ -41,6 +41,13 @@ in
       { }
   );
 
+  environment.etc = mkIf (config.isDarwin && !config.nix.enable) {
+    "nix/nix.custom.conf".text = ''
+      extra-experimental-features = nix-command flakes pipe-operators
+      warn-dirty = false
+    '';
+  };
+
   environment.systemPackages = with pkgs; [
     nh
   ];
