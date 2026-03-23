@@ -63,9 +63,9 @@ in
             rebuild = "ulimit -n 4096 && nh darwin switch --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}";
             bootstrap = "cd ${darwinConfig.my.machine.repoPath} && just bootstrap ${darwinConfig.my.machine.hostName}";
 
-            # Explicit update + rebuild
-            rebuild-update = "ulimit -n 4096 && nix flake update --flake ${darwinConfig.my.machine.repoPath} && nh darwin switch --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}";
-            rebuild_update = "ulimit -n 4096 && nix flake update --flake ${darwinConfig.my.machine.repoPath} && nh darwin switch --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}";
+            # Explicit update + rebuild, including Homebrew-managed packages
+            rebuild-update = "ulimit -n 4096 && nix flake update --flake ${darwinConfig.my.machine.repoPath} && brew update && brew upgrade && nh darwin switch --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}";
+            rebuild_update = "ulimit -n 4096 && nix flake update --flake ${darwinConfig.my.machine.repoPath} && brew update && brew upgrade && nh darwin switch --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}";
           };
 
           initContent = ''
