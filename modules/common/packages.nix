@@ -47,7 +47,6 @@
       uv
       rustup
       bacon
-      gcc
       tree-sitter
 
       # LSP and formatters
@@ -71,6 +70,7 @@
       awscli2
     ]
     ++ lib.optionals (!pkgs.stdenv.isDarwin) [
+      gcc
       azure-cli
     ];
 }
