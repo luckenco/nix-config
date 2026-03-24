@@ -66,9 +66,8 @@ Update flake inputs and re-apply:
 rebuild-update
 # equivalent:
 nix flake update
-brew update
-brew upgrade
 nh darwin switch .
+HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade
 ```
 
 ### Linux (`nixos`)
