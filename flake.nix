@@ -40,7 +40,14 @@
     };
 
     # Homebrew management
-    nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    brew-src = {
+      url = "github:Homebrew/brew";
+      flake = false;
+    };
+    nix-homebrew = {
+      url = "github:zhaofengli/nix-homebrew";
+      inputs.brew-src.follows = "brew-src";
+    };
     homebrew-core = {
       url = "github:homebrew/homebrew-core";
       flake = false;

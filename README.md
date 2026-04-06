@@ -101,8 +101,9 @@ just lint
 
 - zsh customization is managed through Home Manager (`programs.zsh`), not `/etc/zshrc` overrides.
 - Linux firewall defaults to enabled in shared Linux networking config.
-- Darwin Homebrew is managed declaratively via `nix-homebrew` and `homebrew.*` settings.
+- Darwin Homebrew is managed declaratively via `nix-homebrew`, `brew-src`, and `homebrew.*` settings.
 - Homebrew auto-update/upgrade/cleanup are disabled during activation for deterministic, non-disruptive rebuilds.
+- When updating Homebrew inputs, move `brew-src`, `homebrew-core`, and `homebrew-cask` together so the pinned runtime stays compatible with the pinned tap DSL.
 - `ty` in Zed config is pinned to the Nix package path (`${pkgs.ty}/bin/ty`).
 - `my.secrets.enable` defaults to `false`; enable it only after adding an age key at `~/.config/sops/age/keys.txt`.
 - Screenshots are configured to `${homeDir}/Pictures/Screenshots` and that directory is created during activation.
