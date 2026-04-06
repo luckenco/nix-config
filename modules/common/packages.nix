@@ -23,6 +23,7 @@
       just
       tokei
       nix-output-monitor
+      ast-grep
 
       # Media
       ffmpeg
