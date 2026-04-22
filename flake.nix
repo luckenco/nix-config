@@ -60,6 +60,10 @@
       url = "github:twilio/homebrew-brew";
       flake = false;
     };
+    homebrew-pulumi = {
+      url = "github:pulumi/homebrew-tap";
+      flake = false;
+    };
   };
 
   outputs =

@@ -2,6 +2,7 @@
   homebrew-core,
   homebrew-cask,
   homebrew-twilio,
+  homebrew-pulumi,
   config,
   lib,
   ...
@@ -27,6 +28,7 @@ in
       "mas"
       "mole"
       "opencode" # Coding agent - homebrew updates faster than nixpkgs
+      "pulumi/tap/pulumi"
       "twilio"
       "yt-dlp" # nixpkgs pull-in currently broken on darwin via python jeepney/secretstorage chain
     ];
@@ -62,6 +64,7 @@ in
       "homebrew/homebrew-core" = homebrew-core;
       "homebrew/homebrew-cask" = homebrew-cask;
       "twilio/homebrew-brew" = homebrew-twilio;
+      "pulumi/homebrew-tap" = homebrew-pulumi;
     };
 
     mutableTaps = true;
