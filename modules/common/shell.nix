@@ -49,6 +49,7 @@ in
             rm = "rm -i";
 
             # Neovim
+            vi = "nvim";
             vim = "nvim";
             nvimpz = "PUZZLE_MODE=1 nvim";
 

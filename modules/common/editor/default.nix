@@ -1,15 +1,5 @@
-{ lib, ... }:
-let
-  inherit (lib) enabled;
-in
+{ pkgs, ... }:
 {
-  home-manager.sharedModules = [
-    {
-      programs.neovim = enabled {
-        defaultEditor = true;
-        viAlias = true;
-        vimAlias = true;
-      };
-    }
-  ];
+  # Neovim config is still owned by the stowed dotfiles repo for now.
+  environment.systemPackages = [ pkgs.neovim ];
 }

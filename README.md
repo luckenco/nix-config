@@ -107,8 +107,10 @@ just lint
 - `ty` in Zed config is pinned to the Nix package path (`${pkgs.ty}/bin/ty`).
 - `my.secrets.enable` defaults to `false`; enable it only after adding an age key at `~/.config/sops/age/keys.txt`.
 - Screenshots are configured to `${homeDir}/Pictures/Screenshots` and that directory is created during activation.
+- Neovim is currently installed by Nix, but `~/.config/nvim` is still owned by the stowed dotfiles repo rather than Home Manager.
 
 ## Known follow-ups
 
 - `hosts/vps/hardware-configuration.nix` is still a placeholder and must be replaced with real hardware config before production deployment.
 - Re-check Homebrew fallbacks (`gitui`, `yt-dlp`, `azure-cli`) periodically and move back to nixpkgs when stable on Darwin.
+- Migrate the Neovim config from the dotfiles repo into Home Manager, then let Home Manager take ownership of `~/.config/nvim`.
