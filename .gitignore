@@ -6,3 +6,5 @@ result-*
 .direnv
 
 .DS_Store
+
+nvim.log
