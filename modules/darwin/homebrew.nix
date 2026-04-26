@@ -23,6 +23,7 @@ in
     # TODO: Periodically check if these become available/fixed in nixpkgs
     brews = [
       "azure-cli" # nixpkgs build currently failing on darwin
+      "cocoapods"
       "gitui" # Broken in nixpkgs on aarch64-darwin
       "livekit-cli"
       "mas"
@@ -38,7 +39,9 @@ in
       "claude-code" # Coding agent - homebrew updates faster than nixpkgs
       "codex" # Coding agent - cask, not brew
       "figma"
+      "gcloud-cli"
       "ghostty"
+      "linear-linear"
       "microsoft-teams"
       "protonvpn"
       "raycast"
