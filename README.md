@@ -104,6 +104,8 @@ just lint
 - Darwin Homebrew is managed declaratively via `nix-homebrew`, `brew-src`, and `homebrew.*` settings.
 - Homebrew auto-update/upgrade/cleanup are disabled during activation for deterministic, non-disruptive rebuilds.
 - When updating Homebrew inputs, move `brew-src`, `homebrew-core`, and `homebrew-cask` together so the pinned runtime stays compatible with the pinned tap DSL.
+- Package ownership is Nix-first, not Nix-only: stable CLI/dev tools and shared config should live in Nix; Homebrew is for GUI apps, broken Darwin packages, and fast-moving vendor/agent tools.
+- Rust project tooling follows `rustup`/Cargo when that is the natural upstream workflow, so global Cargo CLIs such as `sqlx-cli`, `cargo-binstall`, and `rustowl` are intentionally not forced into Nix.
 - `ty` in Zed config is pinned to the Nix package path (`${pkgs.ty}/bin/ty`).
 - `my.secrets.enable` defaults to `false`; enable it only after adding an age key at `~/.config/sops/age/keys.txt`.
 - Screenshots are configured to `${homeDir}/Pictures/Screenshots` and that directory is created during activation.

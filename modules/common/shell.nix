@@ -73,23 +73,69 @@ in
             # PATH setup (order matters: earlier = higher priority)
             typeset -U path
 
-            # User paths (highest priority, prepended before nix paths)
+            path_remove() {
+              local p
+              for p in "$@"; do
+                path=("''${(@)path:#$p}")
+              done
+            }
+
+            path_prepend_existing() {
+              local i p
+              for (( i = $#; i >= 1; i-- )); do
+                p="''${argv[$i]}"
+                [[ -d "$p" ]] && path=("$p" $path)
+              done
+            }
+
+            path_append_after_nix_existing() {
+              local i p insert_after
+              local -a existing_paths
+              existing_paths=()
+
+              for p in "$@"; do
+                [[ -d "$p" ]] && existing_paths+=("$p")
+              done
+              (( $#existing_paths == 0 )) && return
+
+              insert_after=0
+              for (( i = 1; i <= $#path; i++ )); do
+                case "$path[$i]" in
+                  "$HOME/.nix-profile/bin"|/etc/profiles/per-user/*/bin|/run/current-system/sw/bin|/nix/var/nix/profiles/default/bin)
+                    insert_after=$i
+                    ;;
+                esac
+              done
+
+              if (( insert_after > 0 )); then
+                path=("''${path[@]:0:$insert_after}" "''${existing_paths[@]}" "''${path[@]:$insert_after}")
+              else
+                path+=("''${existing_paths[@]}")
+              fi
+            }
+
+            # User paths stay above nix paths for local overrides and rustup-managed tools.
             local user_paths=(
               "$HOME/.local/bin"
               "$HOME/.cargo/bin"
             )
-            for p in "''${user_paths[@]}"; do
-              [[ -d "$p" ]] && path=("$p" $path)
-            done
 
-            # Homebrew and bun (lower priority, appended after nix paths)
+            # Homebrew, bun globals, and Orbstack are lower priority than nix paths.
+            local fallback_paths=()
             if [[ -d "/opt/homebrew" ]]; then
               export HOMEBREW_NO_ANALYTICS=1
               export HOMEBREW_NO_ENV_HINTS=1
-              path+=("/opt/homebrew/bin" "/opt/homebrew/sbin")
+              fallback_paths+=("/opt/homebrew/bin" "/opt/homebrew/sbin")
             fi
-            [[ -d "$HOME/.bun/bin" ]]       && path+=("$HOME/.bun/bin")
-            [[ -d "$HOME/.cache/.bun/bin" ]] && path+=("$HOME/.cache/.bun/bin")
+            fallback_paths+=(
+              "$HOME/.bun/bin"
+              "$HOME/.cache/.bun/bin"
+              "$HOME/.orbstack/bin"
+            )
+
+            path_remove "''${user_paths[@]}" "''${fallback_paths[@]}"
+            path_prepend_existing "''${user_paths[@]}"
+            path_append_after_nix_existing "''${fallback_paths[@]}"
 
             export PATH
 
