@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 let
   inherit (lib) enabled;
 in
@@ -14,6 +14,13 @@ in
       programs.direnv = enabled {
         enableZshIntegration = true;
         nix-direnv.enable = true;
+        package =
+          if pkgs.stdenv.isDarwin then
+            pkgs.direnv.overrideAttrs {
+              doCheck = false;
+            }
+          else
+            pkgs.direnv;
       };
 
       programs.zoxide = enabled {

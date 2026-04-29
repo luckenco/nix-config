@@ -64,6 +64,10 @@
       url = "github:pulumi/homebrew-tap";
       flake = false;
     };
+    homebrew-planetscale = {
+      url = "github:planetscale/homebrew-tap";
+      flake = false;
+    };
   };
 
   outputs =
