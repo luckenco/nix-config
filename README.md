@@ -105,6 +105,7 @@ just lint
 - Homebrew auto-update/upgrade/cleanup are disabled during activation for deterministic, non-disruptive rebuilds.
 - When updating Homebrew inputs, move `brew-src`, `homebrew-core`, and `homebrew-cask` together so the pinned runtime stays compatible with the pinned tap DSL.
 - Package ownership is Nix-first, not Nix-only: stable CLI/dev tools and shared config should live in Nix; Homebrew is for GUI apps, broken Darwin packages, and fast-moving vendor/agent tools.
+- Zed on Darwin is installed from the official download and auto-updated by the app; nix-darwin only manages `~/.config/zed/settings.json`.
 - Rust project tooling follows `rustup`/Cargo when that is the natural upstream workflow, so global Cargo CLIs such as `sqlx-cli`, `cargo-binstall`, and `rustowl` are intentionally not forced into Nix.
 - `ty` in Zed config is pinned to the Nix package path (`${pkgs.ty}/bin/ty`).
 - `my.secrets.enable` defaults to `false`; enable it only after adding an age key at `~/.config/sops/age/keys.txt`.

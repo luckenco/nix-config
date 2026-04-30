@@ -2,7 +2,8 @@
 {
   home-manager.sharedModules = [
     {
-      # Zed editor configuration
+      # Install Zed from https://zed.dev/download and let the app auto-update.
+      # nixpkgs/Homebrew casks can lag upstream; Home Manager owns settings only.
       xdg.configFile."zed/settings.json".text = builtins.toJSON (
         with config.theme;
         {
@@ -70,7 +71,7 @@
 
           calls.mute_on_join = true;
 
-          ui_font_size = font.size;
+          ui_font_size = 15;
           ui_font_family = font.mono;
 
           vertical_scroll_margin = 8;
