@@ -21,7 +21,7 @@ in
           #window-decoration = "none";
           gtk-titlebar = false;
 
-          window-padding-x = ui.padding;
+          window-padding-x = 12;
           window-padding-y = ui.padding - 2;
           cursor-style = "bar";
           cursor-style-blink = false;
