@@ -91,13 +91,13 @@ in
     "com.apple.AppleMultitouchTrackpad" = {
       Clicking = true;
       TrackpadRightClick = true;
-      TrackpadThreeFingerDrag = true;
+      TrackpadThreeFingerDrag = false;
     };
 
     "com.apple.driver.AppleBluetoothMultitouch.trackpad" = {
       Clicking = true;
       TrackpadRightClick = true;
-      TrackpadThreeFingerDrag = true;
+      TrackpadThreeFingerDrag = false;
     };
   };
   system.stateVersion = 6;
