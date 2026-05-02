@@ -45,6 +45,7 @@ in
       "figma"
       "gcloud-cli"
       "ghostty"
+      "keyboardcleantool"
       "linear-linear"
       "microsoft-teams"
       "protonvpn"
