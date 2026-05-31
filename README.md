@@ -99,6 +99,7 @@ just lint
 
 ## Operational notes
 
+- Branch policy: the repo currently tracks `nixpkgs-unstable` with `home-manager/master` so Nixpkgs and Home Manager stay on the same moving release line. For a quieter stable base, switch them together to `github:NixOS/nixpkgs/nixos-26.05` and `github:nix-community/home-manager/release-26.05`.
 - zsh customization is managed through Home Manager (`programs.zsh`), not `/etc/zshrc` overrides.
 - Linux firewall defaults to enabled in shared Linux networking config.
 - Darwin Homebrew is managed declaratively via `nix-homebrew`, `brew-src`, and `homebrew.*` settings.
@@ -114,6 +115,7 @@ just lint
 
 ## TODO
 
+- Revisit whether the repo should stay on `nixpkgs-unstable`/`home-manager/master` or move back to matched stable branches.
 - Decide and implement secret management, likely with `sops-nix`, before enabling `my.secrets.enable` on `mbp`.
 - Rotate any API keys that have lived in local shell files before moving them into managed secrets.
 - Install or reconcile declared Homebrew casks that are not yet present locally, especially `linear-linear`.
