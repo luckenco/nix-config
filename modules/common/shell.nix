@@ -61,12 +61,12 @@ in
           }
           // lib.optionalAttrs darwinConfig.isDarwin {
             # Deterministic rebuild (no flake update)
-            rebuild = "ulimit -n 4096 && nh darwin switch --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}";
+            rebuild = "ulimit -n 4096 && nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}";
             bootstrap = "cd ${darwinConfig.my.machine.repoPath} && just bootstrap ${darwinConfig.my.machine.hostName}";
 
             # Flake inputs pin the Homebrew runtime and taps, so avoid `brew update` against immutable Nix store sources.
-            rebuild-update = "ulimit -n 4096 && nix flake update --flake ${darwinConfig.my.machine.repoPath} && nh darwin switch --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath} && HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade";
-            rebuild_update = "ulimit -n 4096 && nix flake update --flake ${darwinConfig.my.machine.repoPath} && nh darwin switch --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath} && HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade";
+            rebuild-update = "ulimit -n 4096 && nix flake update --accept-flake-config --flake ${darwinConfig.my.machine.repoPath} && nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath} && HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade";
+            rebuild_update = "ulimit -n 4096 && nix flake update --accept-flake-config --flake ${darwinConfig.my.machine.repoPath} && nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath} && HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade";
           };
 
           initContent = ''

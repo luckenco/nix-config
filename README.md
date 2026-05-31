@@ -56,8 +56,8 @@ Daily rebuilds:
 ```sh
 rebuild
 # equivalent:
-nh darwin switch .
-nh darwin build .
+nh darwin switch --accept-flake-config .
+nh darwin build --accept-flake-config .
 ```
 
 Update flake inputs and re-apply:
@@ -65,8 +65,8 @@ Update flake inputs and re-apply:
 ```sh
 rebuild-update
 # equivalent:
-nix flake update
-nh darwin switch .
+nix flake update --accept-flake-config
+nh darwin switch --accept-flake-config .
 HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade
 ```
 
