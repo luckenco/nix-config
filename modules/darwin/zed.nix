@@ -15,8 +15,6 @@
 
           base_keymap = "VSCode";
 
-          features.edit_prediction_provider = "zed";
-
           buffer_font_family = font.mono;
           cursor_blink = false;
 
@@ -75,7 +73,7 @@
           ui_font_family = font.mono;
 
           vertical_scroll_margin = 8;
-          relative_line_numbers = true;
+          relative_line_numbers = "enabled";
 
           terminal = {
             font_family = "MonoLisa Nerd Font";
@@ -87,8 +85,6 @@
             delay_ms = 480;
             show_commit_summary = true;
           };
-
-          edit_predictions.mode = "subtle";
         }
       );
     }
