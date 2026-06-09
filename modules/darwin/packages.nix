@@ -4,5 +4,8 @@
     brave
     orbstack
     pinentry_mac
+    pscale
+    pulumi
+    twilio-cli
   ];
 }

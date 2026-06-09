@@ -118,7 +118,7 @@ just lint
 - Revisit whether the repo should stay on `nixpkgs-unstable`/`home-manager/master` or move back to matched stable branches.
 - Decide and implement secret management, likely with `sops-nix`, before enabling `my.secrets.enable` on `mbp`.
 - Rotate any API keys that have lived in local shell files before moving them into managed secrets.
-- Install or reconcile declared Homebrew casks that are not yet present locally, especially `linear-linear`.
+- Install or reconcile declared Homebrew casks that are not yet present locally.
 - Investigate the non-blocking pinned Homebrew tap `.git: Permission denied` warning.
 - Investigate the non-blocking Nix `options.json` store-path context warning.
 - `hosts/vps/hardware-configuration.nix` is still a placeholder and must be replaced with real hardware config before production deployment.

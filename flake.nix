@@ -56,18 +56,6 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
-    homebrew-twilio = {
-      url = "github:twilio/homebrew-brew";
-      flake = false;
-    };
-    homebrew-pulumi = {
-      url = "github:pulumi/homebrew-tap";
-      flake = false;
-    };
-    homebrew-planetscale = {
-      url = "github:planetscale/homebrew-tap";
-      flake = false;
-    };
   };
 
   outputs =
