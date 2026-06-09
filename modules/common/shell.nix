@@ -31,6 +31,10 @@ in
             EDITOR = "nvim";
           };
 
+          profileExtra = lib.optionalString darwinConfig.isDarwin ''
+            [[ -f "$HOME/.orbstack/shell/init.zsh" ]] && source "$HOME/.orbstack/shell/init.zsh"
+          '';
+
           shellAliases = {
             # File listing (eza)
             ls = "eza -F --group-directories-first --color=always --icons";
