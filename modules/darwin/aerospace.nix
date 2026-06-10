@@ -149,14 +149,17 @@
           };
         };
 
-        home.file."/.config/aerospace/aerospace.toml".onChange = lib.mkForce ''
-          if ${aerospace} list-workspaces --all >/dev/null 2>&1; then
-            echo "AeroSpace config changed, reloading..."
-            ${aerospace} reload-config || true
-          else
-            echo "AeroSpace config changed, server is not running; skipping reload."
-          fi
-        '';
+        home.file."/.config/aerospace/aerospace.toml" = {
+          target = ".config/aerospace/aerospace.toml";
+          onChange = lib.mkForce ''
+            if ${aerospace} list-workspaces --all >/dev/null 2>&1; then
+              echo "AeroSpace config changed, reloading..."
+              ${aerospace} reload-config || true
+            else
+              echo "AeroSpace config changed, server is not running; skipping reload."
+            fi
+          '';
+        };
       }
     )
   ];
