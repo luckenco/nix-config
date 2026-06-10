@@ -16,7 +16,7 @@ let
 in
 {
   nixpkgs.config.allowUnfreePredicate = mkIf (config.isLinux && config.isDesktop) (
-    pkg: builtins.elem (lib.getName pkg) [ "sublime4" ]
+    pkg: builtins.elem (lib.getName pkg) [ "sublimetext4" ]
   );
 
   environment.systemPackages = mkIf (config.isLinux && config.isDesktop) [ pkgs.sublime4 ];
