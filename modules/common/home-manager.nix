@@ -12,7 +12,9 @@ in
       (
         { config, lib, ... }:
         {
-          xdg = enabled { };
+          xdg = enabled {
+            userDirs.setSessionVariables = true;
+          };
 
           home.activation.ensureScreenshotDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
             mkdir -p "${config.home.homeDirectory}/Pictures/Screenshots"
