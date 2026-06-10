@@ -67,7 +67,7 @@ rebuild-update
 # equivalent:
 nix flake update --accept-flake-config
 nh darwin switch --accept-flake-config .
-HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade
+HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --yes
 ```
 
 ### Linux (`nixos`)
@@ -104,6 +104,7 @@ just lint
 - Linux firewall defaults to enabled in shared Linux networking config.
 - Darwin Homebrew is managed declaratively via `nix-homebrew`, `brew-src`, and `homebrew.*` settings.
 - Homebrew auto-update/upgrade/cleanup are disabled during activation for deterministic, non-disruptive rebuilds.
+- Immutable Homebrew taps require `/opt/homebrew/Library/Taps` to be the `nix-homebrew` symlink; when migrating an existing install, move any real `Taps` directory aside once before activation.
 - When updating Homebrew inputs, move `brew-src`, `homebrew-core`, and `homebrew-cask` together so the pinned runtime stays compatible with the pinned tap DSL.
 - Package ownership is Nix-first, not Nix-only: stable CLI/dev tools and shared config should live in Nix; Homebrew is for GUI apps, broken Darwin packages, and fast-moving vendor/agent tools.
 - Zed on Darwin is installed from the official download and auto-updated by the app; nix-darwin only manages `~/.config/zed/settings.json`.

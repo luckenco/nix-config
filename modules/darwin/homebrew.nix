@@ -67,6 +67,6 @@ in
       "homebrew/homebrew-cask" = homebrew-cask;
     };
 
-    mutableTaps = true;
+    mutableTaps = false;
   };
 }

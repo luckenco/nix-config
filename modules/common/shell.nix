@@ -9,6 +9,12 @@ in
       { config, ... }:
       let
         hmConfig = config;
+        rebuildUpdate = lib.concatStringsSep " && " [
+          "ulimit -n 4096"
+          "nix flake update --accept-flake-config --flake ${darwinConfig.my.machine.repoPath}"
+          "nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}"
+          "HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --yes"
+        ];
       in
       {
         programs.zsh = enabled {
@@ -69,8 +75,8 @@ in
             bootstrap = "cd ${darwinConfig.my.machine.repoPath} && just bootstrap ${darwinConfig.my.machine.hostName}";
 
             # Flake inputs pin the Homebrew runtime and taps, so avoid `brew update` against immutable Nix store sources.
-            rebuild-update = "ulimit -n 4096 && nix flake update --accept-flake-config --flake ${darwinConfig.my.machine.repoPath} && nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath} && HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade";
-            rebuild_update = "ulimit -n 4096 && nix flake update --accept-flake-config --flake ${darwinConfig.my.machine.repoPath} && nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath} && HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade";
+            rebuild-update = rebuildUpdate;
+            rebuild_update = rebuildUpdate;
           };
 
           initContent = ''
