@@ -40,15 +40,17 @@ in
       programs.git = enabled {
         signing = {
           key = "7B0964DD92945BF9";
+          format = "openpgp";
           signByDefault = true;
+        }
+        // lib.optionalAttrs config.isDarwin {
+          signer = "/etc/profiles/per-user/${config.system.primaryUser or "cal"}/bin/gpg";
         };
 
         settings = {
           user.name = "Constantin Luckenbach";
           user.email = "cluckenbach@protonmail.com";
 
-          commit.gpgsign = true;
-          tag.gpgsign = true;
           core.ignorecase = false;
           init.defaultBranch = "main";
           push.autoSetupRemote = true;
@@ -56,9 +58,6 @@ in
           rebase.autoStash = true;
           rebase.autoSquash = true;
           rerere.enabled = true;
-        }
-        // lib.optionalAttrs config.isDarwin {
-          gpg.program = "/etc/profiles/per-user/${config.system.primaryUser or "cal"}/bin/gpg";
         };
       };
 
