@@ -39,7 +39,6 @@ let
     nixpkgs.overlays = inputOverlays ++ [
       (final: prev: {
         zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
-        codex = inputs.codex.packages.${prev.stdenv.hostPlatform.system}.default;
       })
     ];
   };

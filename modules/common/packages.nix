@@ -33,7 +33,6 @@
       jnv
 
       # AI/LLM
-      # codex  # TODO: upstream build broken (rama-boring-sys fails)
       llm
 
       # Documentation
@@ -72,5 +71,6 @@
     ++ lib.optionals (!pkgs.stdenv.isDarwin) [
       gcc
       azure-cli
+      codex
     ];
 }
