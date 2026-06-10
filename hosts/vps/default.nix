@@ -18,7 +18,7 @@ lib.nixosSystem' (
     boot.loader.grub.enable = true;
     boot.loader.grub.device = "/dev/sda";
 
-    networking.hostName = "nixos-vps";
+    networking.hostName = "vps";
 
     # Tailscale for secure access
     services.tailscale.enable = true;
