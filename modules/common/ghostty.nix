@@ -2,7 +2,7 @@
 let
   inherit (lib) enabled mkIf;
 in
-{
+mkIf config.isDesktop {
   home-manager.sharedModules = [
     {
       programs.ghostty = enabled {
