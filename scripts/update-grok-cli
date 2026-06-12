@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-repo_root="$(git rev-parse --show-toplevel)"
+# Support jj (jujutsu) repos (primary here) as well as plain git.
+# Falls back gracefully if neither is present.
+if command -v jj >/dev/null 2>&1 && jj root >/dev/null 2>&1; then
+  repo_root="$(jj root)"
+elif command -v git >/dev/null 2>&1; then
+  repo_root="$(git rev-parse --show-toplevel)"
+else
+  repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+fi
 cd "$repo_root"
 
 package_file="pkgs/grok-cli-latest.nix"
@@ -29,7 +37,5 @@ perl -0pi -e '
   s/(aarch64-linux = \{\n\s+platform = "linux-aarch64";\n\s+hash = ")[^"]+(";)/$1$ENV{GROK_HASH_LINUX_AARCH64}$2/s;
   s/(x86_64-linux = \{\n\s+platform = "linux-x86_64";\n\s+hash = ")[^"]+(";)/$1$ENV{GROK_HASH_LINUX_X86_64}$2/s;
 ' "$package_file"
-
-nix fmt "$package_file"
 
 echo "Pinned Grok CLI $version in $package_file"
