@@ -17,25 +17,35 @@ in
       ];
       warn-dirty = false;
     };
+
+    # Automatic GC + store optimisation (de-duplication) when the Nix
+    # integration is enabled (normal nix-darwin or NixOS; skipped when
+    # using Determinate Nix with `nix.enable = false` on the mbp).
+    #
+    # Helps keep the store from growing unbounded on a development machine
+    # (rustup toolchains, uv/bun/node, LSPs, generations of the config, etc.).
+    gc = mkIf config.nix.enable (
+      {
+        automatic = true;
+        options = "--delete-older-than 7d";
+      }
+      // lib.optionalAttrs config.isLinux {
+        dates = "weekly";
+        persistent = true;
+      }
+    );
+
+    optimise.automatic = mkIf config.nix.enable true;
   }
   // (
     if config.isLinux then
       {
         channel.enable = false;
 
-        gc = {
-          automatic = true;
-          options = "--delete-older-than 7d";
-          dates = "weekly";
-          persistent = true;
-        };
-
         settings.trusted-users = [
           "root"
           "@wheel"
         ];
-
-        optimise.automatic = true;
       }
     else
       { }
