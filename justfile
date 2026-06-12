@@ -11,16 +11,14 @@ bootstrap host="mbp":
     echo "No age key at ~/.config/sops/age/keys.txt (okay if my.secrets.enable = false)."; \
   fi
   @if command -v nh >/dev/null 2>&1; then \
-    nh darwin switch --hostname {{host}} .; \
+    nh darwin switch --accept-flake-config --hostname {{host}} .; \
   else \
-    nix run nix-darwin -- switch --flake .#{{host}}; \
+    nix --accept-flake-config run nix-darwin -- switch --flake .#{{host}}; \
   fi
 
 fmt:
-  @nix fmt .
+  @nix --accept-flake-config fmt .
 
 lint:
-  @nix flake check
+  @nix --accept-flake-config flake check
 
-update-grok:
-  @bash scripts/update-grok-cli
