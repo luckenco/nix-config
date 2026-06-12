@@ -22,3 +22,5 @@ fmt:
 lint:
   @nix --accept-flake-config flake check
 
+update-grok:
+  @bash scripts/update-grok-cli
