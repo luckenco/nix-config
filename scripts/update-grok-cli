@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+package_file="pkgs/grok-cli-latest.nix"
+version="$(curl -fsSL https://x.ai/cli/stable | tr -d '[:space:]')"
+
+if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[^[:space:]]+)?$ ]]; then
+  echo "Invalid Grok version from stable channel: $version" >&2
+  exit 1
+fi
+
+prefetch_hash() {
+  local platform="$1"
+  nix store prefetch-file --json "https://x.ai/cli/grok-${version}-${platform}" \
+    | sed -n 's/.*"hash":"\([^"]*\)".*/\1/p'
+}
+
+export GROK_VERSION="$version"
+export GROK_HASH_MACOS_AARCH64="$(prefetch_hash macos-aarch64)"
+export GROK_HASH_LINUX_AARCH64="$(prefetch_hash linux-aarch64)"
+export GROK_HASH_LINUX_X86_64="$(prefetch_hash linux-x86_64)"
+
+perl -0pi -e '
+  s/version = "[^"]+";/version = "$ENV{GROK_VERSION}";/;
+  s/(aarch64-darwin = \{\n\s+platform = "macos-aarch64";\n\s+hash = ")[^"]+(";)/$1$ENV{GROK_HASH_MACOS_AARCH64}$2/s;
+  s/(aarch64-linux = \{\n\s+platform = "linux-aarch64";\n\s+hash = ")[^"]+(";)/$1$ENV{GROK_HASH_LINUX_AARCH64}$2/s;
+  s/(x86_64-linux = \{\n\s+platform = "linux-x86_64";\n\s+hash = ")[^"]+(";)/$1$ENV{GROK_HASH_LINUX_X86_64}$2/s;
+' "$package_file"
+
+nix fmt "$package_file"
+
+echo "Pinned Grok CLI $version in $package_file"

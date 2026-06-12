@@ -21,3 +21,6 @@ fmt:
 
 lint:
   @nix flake check
+
+update-grok:
+  @bash scripts/update-grok-cli
