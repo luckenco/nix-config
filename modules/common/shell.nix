@@ -12,7 +12,8 @@ in
         rebuildUpdate = lib.concatStringsSep " && " [
           "ulimit -n 4096"
           "cd ${darwinConfig.my.machine.repoPath}"
-          "just update-grok"
+          "bash scripts/update-grok-cli"
+          "nix --accept-flake-config fmt pkgs/grok-cli-latest.nix"
           "nix flake update --accept-flake-config --flake ${darwinConfig.my.machine.repoPath}"
           "nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}"
           "HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --yes"
