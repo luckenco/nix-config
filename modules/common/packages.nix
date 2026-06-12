@@ -33,6 +33,7 @@
       jnv
 
       # AI/LLM
+      grok-cli-latest
       llm
 
       # Documentation

@@ -38,6 +38,7 @@ let
   overlayModule = {
     nixpkgs.overlays = inputOverlays ++ [
       (final: prev: {
+        grok-cli-latest = final.callPackage ../pkgs/grok-cli-latest.nix { };
         zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default;
       })
     ];
