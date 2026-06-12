@@ -82,6 +82,15 @@
         }
       );
 
+      # Host auto-discovery + classification.
+      # Each hosts/<name>/default.nix calls darwinSystem' or nixosSystem'.
+      # We group the evaluated results (the big attrset returned by the
+      # system builders) to produce darwinConfigurations vs nixosConfigurations
+      # in the flake outputs without having to list hosts explicitly.
+      #
+      # The predicate relies on the shape of the evaluated system value for
+      # the Linux hosts. This has always worked in practice (see nix flake show).
+      # The comment exists purely for future maintainability / clarity.
       hostsByType =
         readDir ./hosts
         |> mapAttrs (name: const (import ./hosts/${name} lib))
