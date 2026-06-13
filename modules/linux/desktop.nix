@@ -68,7 +68,7 @@ mkIf config.isDesktop {
 
         programs.i3status-rust = enabled {
           bars.bottom = {
-            theme = "gruvbox-dark";
+            theme = systemConfig.theme.names.i3status;
             icons = "awesome6";
             blocks = [
               {

@@ -57,7 +57,7 @@
             ruff.initialization_options.settings.lineLength = 80;
           };
 
-          theme = "Gruvbox Dark";
+          theme = names.zed;
           vim_mode = true;
 
           project_panel = {

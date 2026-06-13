@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   inherit (lib) enabled;
 in
@@ -9,7 +14,7 @@ in
         enableZshIntegration = false;
 
         settings = {
-          theme = "gruvbox-dark";
+          theme = config.theme.names.zellij;
           default_layout = "missioncontrol";
           show_startup_tips = false;
         };

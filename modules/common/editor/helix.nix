@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ config, lib, ... }:
 let
   inherit (lib) enabled;
 in
@@ -7,7 +7,7 @@ in
     {
       programs.helix = enabled {
         settings = {
-          theme = "gruvbox_dark_hard";
+          theme = config.theme.names.helix;
 
           editor = {
             line-number = "relative";

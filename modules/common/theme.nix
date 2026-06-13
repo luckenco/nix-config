@@ -6,6 +6,21 @@ in
   options.theme = mkValue {
     name = "gruvbox-dark";
 
+    # Stylix could eventually own Base16 palette generation and supported app
+    # targets, but keep this small compatibility layer for tools whose built-in
+    # themes use different names for the same scheme.
+    names = {
+      ghostty = "Gruvbox Dark";
+      helix = "gruvbox_dark_hard";
+      i3status = "gruvbox-dark";
+      sublime = {
+        colorScheme = "USGC-POLYIMIDE-ST.sublime-color-scheme";
+        uiTheme = "Adaptive.sublime-theme";
+      };
+      zed = "Gruvbox Dark";
+      zellij = "gruvbox-dark";
+    };
+
     # Gruvbox Dark Hard palette
     colors = {
       bg = "1d2021"; # hard contrast bg

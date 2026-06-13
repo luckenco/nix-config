@@ -13,7 +13,7 @@ mkIf config.isDesktop {
           font-family = font.mono;
           font-size = font.size;
           font-thicken = true;
-          theme = "Gruvbox Dark";
+          theme = names.ghostty;
 
           window-height = 48;
           window-width = 140;
