@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# rebuild-update: perform the full update + rebuild sequence without mutating
+# the caller's working directory. This script is invoked via an absolute path
+# from the shell alias so that a bare `cd` never appears in the alias expansion
+# that the interactive shell executes.
+
+repo_root="${1:-}"
+host="${2:-}"
+
+# If not provided (e.g. invoked directly or via just), auto-detect like
+# scripts/update-grok-cli does. This keeps the script self-contained.
+if [[ -z "$repo_root" ]]; then
+  if command -v jj >/dev/null 2>&1 && jj root >/dev/null 2>&1; then
+    repo_root="$(jj root)"
+  elif command -v git >/dev/null 2>&1; then
+    repo_root="$(git rev-parse --show-toplevel)"
+  else
+    repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  fi
+fi
+
+if [[ -z "$host" ]]; then
+  # Best-effort default for this config's primary Darwin host.
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    host="$(scutil --get LocalHostName 2>/dev/null || hostname -s 2>/dev/null || echo mbp)"
+  else
+    host="$(hostname -s 2>/dev/null || echo mbp)"
+  fi
+fi
+
+cd "$repo_root"
+
+# Raise fd limit for the duration of the (potentially heavy) nix + brew work.
+ulimit -n 4096 || true
+
+bash scripts/update-grok-cli
+nix --accept-flake-config fmt pkgs/grok-cli-latest.nix
+nix flake update --accept-flake-config --flake "$repo_root"
+nh darwin switch --accept-flake-config --hostname "$host" "$repo_root"
+HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --yes

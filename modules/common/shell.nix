@@ -9,15 +9,6 @@ in
       { config, ... }:
       let
         hmConfig = config;
-        rebuildUpdate = lib.concatStringsSep " && " [
-          "ulimit -n 4096"
-          "cd ${darwinConfig.my.machine.repoPath}"
-          "bash scripts/update-grok-cli"
-          "nix --accept-flake-config fmt pkgs/grok-cli-latest.nix"
-          "nix flake update --accept-flake-config --flake ${darwinConfig.my.machine.repoPath}"
-          "nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}"
-          "HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --yes"
-        ];
       in
       {
         programs.zsh = enabled {
@@ -75,11 +66,15 @@ in
           // lib.optionalAttrs darwinConfig.isDarwin {
             # Deterministic rebuild (no flake update)
             rebuild = "ulimit -n 4096 && nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}";
-            bootstrap = "cd ${darwinConfig.my.machine.repoPath} && just bootstrap ${darwinConfig.my.machine.hostName}";
+            bootstrap = "( cd ${darwinConfig.my.machine.repoPath} && just bootstrap ${darwinConfig.my.machine.hostName} )"; # subshell so caller PWD is unchanged
 
             # Flake inputs pin the Homebrew runtime and taps, so avoid `brew update` against immutable Nix store sources.
-            rebuild-update = rebuildUpdate;
-            rebuild_update = rebuildUpdate;
+            # Logic is in scripts/rebuild-update (invoked via absolute path) so the alias
+            # text that zsh substitutes for the live shell never performs a `cd`. The script
+            # can safely `cd` inside its own process. This fixes the symptom even for the
+            # invocation that activates the generation containing the new alias definition.
+            rebuild-update = "ulimit -n 4096 && bash ${darwinConfig.my.machine.repoPath}/scripts/rebuild-update ${darwinConfig.my.machine.repoPath} ${darwinConfig.my.machine.hostName}";
+            rebuild_update = "ulimit -n 4096 && bash ${darwinConfig.my.machine.repoPath}/scripts/rebuild-update ${darwinConfig.my.machine.repoPath} ${darwinConfig.my.machine.hostName}";
           };
 
           initContent = ''
