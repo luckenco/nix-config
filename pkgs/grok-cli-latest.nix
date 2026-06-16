@@ -5,20 +5,20 @@
 }:
 
 let
-  version = "0.2.51";
+  version = "0.2.54";
 
   sources = {
     aarch64-darwin = {
       platform = "macos-aarch64";
-      hash = "sha256-HKq1jrJeGtdrMJFUrNJkOnCZJHVV4QP+OsY/Q4gJmoI=";
+      hash = "sha256-lUh6VbkBWQMqX0o285NbNN5zPKjkFXCi/qeMoQbYcDw=";
     };
     aarch64-linux = {
       platform = "linux-aarch64";
-      hash = "sha256-GteXTXOGrDfF/Pz47u32FAO2E01PVhtAxZM0Ii9sV4s=";
+      hash = "sha256-WBbTWEmz4WflNUIpMKgt9mqpKNqpS/2v6UFmyz6J8I8=";
     };
     x86_64-linux = {
       platform = "linux-x86_64";
-      hash = "sha256-UpFiZ6oveGjCOm3XhH3+Bm45pSuP/SFjgBhjl+p9AHU=";
+      hash = "sha256-SmRlkVVfuKrGym4GfhLGMCv+fUROOf/94oj90KTDJ/s=";
     };
   };
 
