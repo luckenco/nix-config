@@ -39,4 +39,11 @@ bash scripts/update-grok-cli
 nix --accept-flake-config fmt pkgs/grok-cli-latest.nix
 nix flake update --accept-flake-config --flake "$repo_root"
 nh darwin switch --accept-flake-config --hostname "$host" "$repo_root"
+
+if command -v pi >/dev/null 2>&1; then
+  pi update --extensions
+else
+  echo "pi not found; skipping pi package update"
+fi
+
 HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --yes
