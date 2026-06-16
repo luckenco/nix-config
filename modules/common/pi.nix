@@ -4,6 +4,10 @@ let
     packages = [
       {
         source = "git:git@github.com:luckenco/pinnacle";
+        extensions = [
+          "extensions/*.ts"
+          "!extensions/todos.ts"
+        ];
       }
       {
         source = "npm:pi-web-access";
@@ -15,7 +19,7 @@ let
         source = "npm:pi-btw";
       }
       {
-        source = "npm:pi-manage-todo-list";
+        source = "npm:@juicesharp/rpiv-todo";
       }
     ];
   };
