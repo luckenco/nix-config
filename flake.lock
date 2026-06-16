@@ -3,11 +3,11 @@
     "brew-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1781335797,
-        "narHash": "sha256-YbIEgvfLQpBXtCpgLQqVfCxmRYxc9yqjnPLsBEnhELs=",
+        "lastModified": 1781552777,
+        "narHash": "sha256-whdKPkOD1FgMoo26k2rWcv4OnkY58rkzYMPqR97DqOQ=",
         "owner": "Homebrew",
         "repo": "brew",
-        "rev": "e9cc776bc75b7531b1125530f3c5f7fa06a9ceee",
+        "rev": "7807692b23f588e392dc43e75afc909227ac1c4c",
         "type": "github"
       },
       "original": {
@@ -49,27 +49,6 @@
         "type": "github"
       }
     },
-    "home-manager": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1781305496,
-        "narHash": "sha256-g8Vv4Qfc7n+lgov97REu3X6BeJtvYY0hlSUZR1GrGQQ=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "c87a39aa979acc4848016d2220c6238390d84779",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "ref": "master",
-        "repo": "home-manager",
-        "type": "github"
-      }
-    },
     "herdr": {
       "inputs": {
         "nixpkgs": [
@@ -90,14 +69,35 @@
         "type": "github"
       }
     },
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781557312,
+        "narHash": "sha256-QOIRYSUFSq7L5mY3dZymaVhcnne3tPgoR9riB0WocjA=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "c03e4752899e55705dfa63979abd885c582a5c48",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "master",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
     "homebrew-cask": {
       "flake": false,
       "locked": {
-        "lastModified": 1781331077,
-        "narHash": "sha256-OHnSBYyiL7JYB9iV74IQOaCvTaA0RcuxblOa0pOw+TA=",
+        "lastModified": 1781601605,
+        "narHash": "sha256-Kiq7BAIXHfQp+9xpaBmzlcaK1Xben+fxzRbe2yZ9VxY=",
         "owner": "homebrew",
         "repo": "homebrew-cask",
-        "rev": "6b8b53ea77c4f3d61527cfa1ff0709a7453f91ea",
+        "rev": "91494c7b6e78bd3f63a4dbaccdcd0b0f9f6168bc",
         "type": "github"
       },
       "original": {
@@ -109,11 +109,11 @@
     "homebrew-core": {
       "flake": false,
       "locked": {
-        "lastModified": 1781335664,
-        "narHash": "sha256-5NE5h9ADVd19K6W3jZRpBEKcJFK1Y/T73+p3ZJJS+xo=",
+        "lastModified": 1781601540,
+        "narHash": "sha256-njdzwgtodsWx3hPsIA7262b5GbGI/rZ39XuFsZ8ikX0=",
         "owner": "homebrew",
         "repo": "homebrew-core",
-        "rev": "b143370a08f0d0327b7db747f77c3efbef8e863a",
+        "rev": "ea8ac549fdfa18f8d6b887f782dc8a3556bdebaf",
         "type": "github"
       },
       "original": {
@@ -150,11 +150,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781269551,
-        "narHash": "sha256-zn0rty4K5LbBAzuyJMdncDbYzSefr29IUJvcUv7kFn8=",
+        "lastModified": 1781389246,
+        "narHash": "sha256-ORqLAo/hoJdsZC7UPAuEHev6S0+XIqKEC7vjo5prz1k=",
         "owner": "zhaofengli",
         "repo": "nix-homebrew",
-        "rev": "5e721fc7756a6abffe07c7dd5ed3f9080b68108f",
+        "rev": "de7953a08ed4bb9245be043e468561c17b89130d",
         "type": "github"
       },
       "original": {
@@ -165,11 +165,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1781268102,
-        "narHash": "sha256-Zn5KTggEmUB3lXn/ccERNcBdddE6IaOFber9dWViWDg=",
+        "lastModified": 1781454065,
+        "narHash": "sha256-d2xfDjnfRuf/xYGdu9VVRHiav/2w5hDL/5cw2TuVAXw=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "49a4bd0573c376468dd7996ddb6f9fa31d8c4d97",
+        "rev": "9eac87a12312b8f60dd52e1c6e1a265f6fc7f5fc",
         "type": "github"
       },
       "original": {
@@ -182,8 +182,8 @@
     "root": {
       "inputs": {
         "brew-src": "brew-src",
-        "home-manager": "home-manager",
         "herdr": "herdr",
+        "home-manager": "home-manager",
         "homebrew-cask": "homebrew-cask",
         "homebrew-core": "homebrew-core",
         "nix-darwin": "nix-darwin",
