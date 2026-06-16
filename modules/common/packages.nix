@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 {
   environment.systemPackages =
     with pkgs;
@@ -34,6 +39,7 @@
 
       # AI/LLM
       grok-cli-latest
+      inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
       llm
 
       # Documentation
