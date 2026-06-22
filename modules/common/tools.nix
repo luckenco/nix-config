@@ -9,6 +9,7 @@ in
 
       programs.fzf = enabled {
         enableZshIntegration = true;
+        historyWidget.command = "";
       };
 
       programs.direnv = enabled {
