@@ -55,18 +55,25 @@ Daily rebuilds:
 
 ```sh
 rebuild
-# equivalent:
-nh darwin switch --accept-flake-config .
-nh darwin build --accept-flake-config .
+# equivalent, from the repo root:
+ulimit -n 4096 || true
+nh darwin switch --accept-flake-config --hostname mbp .
+
+# build-only validation:
+nh darwin build --accept-flake-config --hostname mbp .
 ```
 
 Update flake inputs and re-apply:
 
 ```sh
 rebuild-update
-# equivalent:
-nix flake update --accept-flake-config
-nh darwin switch --accept-flake-config .
+# equivalent, in outline:
+ulimit -n 4096 || true
+bash scripts/update-grok-cli
+nix --accept-flake-config fmt pkgs/grok-cli-latest.nix
+nix flake update --accept-flake-config --flake .
+nh darwin switch --accept-flake-config --hostname mbp .
+pi update --extensions # when pi is installed
 HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --yes
 ```
 
@@ -86,8 +93,8 @@ just fmt
 just lint
 ```
 
-- `just fmt` runs `nix fmt .` (powered by `flake.nix` `formatter` output using `nixfmt`).
-- `just lint` runs `nix flake check`.
+- `just fmt` runs `nix --accept-flake-config fmt .` (powered by the `flake.nix` `formatter` output using `nixfmt-tree`).
+- `just lint` runs `nix --accept-flake-config flake check`.
 
 ## What is configured
 
