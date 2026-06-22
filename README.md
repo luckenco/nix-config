@@ -93,7 +93,7 @@ just lint
 
 - Shared modules for shell, tooling, editor defaults, git, theme, and terminal UX
 - Linux modules for networking, locale, nix-ld, desktop/session behavior, and Linux-only packages
-- Darwin modules for defaults, Homebrew integration, AeroSpace, GPG, Zed, and Darwin-specific packages
+- Darwin modules for defaults, Homebrew integration, AeroSpace, GPG, Zed, security, shell environment, Dock relaunch handling, and Darwin-specific packages
 - Flake host auto-discovery via `hosts/*`
 - Expanded macOS defaults for developer UX (input autocorrect off, faster UI animations, Finder and Dock tuning, screenshot path/type, trackpad behavior, lock/login defaults)
 
