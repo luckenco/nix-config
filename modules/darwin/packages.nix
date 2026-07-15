@@ -5,7 +5,7 @@
     orbstack
     pinentry_mac
     pscale
-    pulumi
+    (pulumi.withPackages (p: [ p.pulumi-nodejs ]))
     twilio-cli
   ];
 }
