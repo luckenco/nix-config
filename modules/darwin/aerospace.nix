@@ -11,6 +11,9 @@
         programs.aerospace = {
           enable = true;
 
+          # Home Manager owns startup via launchd; this keeps AeroSpace's
+          # native start-at-login registration disabled to avoid duplicate
+          # app instances.
           launchd.enable = true;
 
           settings = {
