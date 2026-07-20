@@ -37,10 +37,10 @@ in
 
           shellAliases = {
             # File listing (eza)
-            ls = "eza -F --group-directories-first --color=always --icons";
-            la = "eza -alF --group-directories-first --color=always --icons";
+            ls = "eza -F --group-directories-first --color=always --icons=auto";
+            la = "eza -alF --group-directories-first --color=always --icons=auto";
             ll = "eza -lF --group-directories-first";
-            lt = "eza -aTF --level=2 --group-directories-first --icons --color=always";
+            lt = "eza -aTF --level=2 --group-directories-first --icons=auto --color=always";
             tree = "eza --tree";
 
             # Tools
