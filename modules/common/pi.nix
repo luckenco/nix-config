@@ -14,6 +14,9 @@ let
       {
         source = "npm:pi-btw";
       }
+      {
+        source = "npm:@plannotator/pi-extension";
+      }
     ];
   };
 in
