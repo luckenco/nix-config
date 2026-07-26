@@ -1,107 +1,140 @@
-# macOS Development Configuration
+# Nix config
 
-Declarative development environment for an Apple Silicon Mac using nix-darwin, Home Manager, and Homebrew.
+My macOS development setup, managed with nix-darwin and Home Manager.
+
+This repo configures my Apple Silicon MacBook Pro: `mbp`.
+
+If necessary it should be easily expandable by creating a new host in 
+the `hosts/` directory.
 
 ## Layout
 
 ```text
 .
 ├── flake.nix
-├── hosts/mbp/
+├── flake.lock
+├── hosts/
+│   └── mbp/
 ├── modules/
 │   ├── common/
 │   └── darwin/
 ├── pkgs/
-└── scripts/
+├── scripts/
+└── justfile
 ```
 
-Modules are imported explicitly through `modules/common/default.nix` and `modules/darwin/default.nix`. A future platform can add its own module directory and flake configuration without changing the macOS setup.
+- `hosts/mbp/` contains the host entry point.
+- `modules/common/` contains shared user and development tooling.
+- `modules/darwin/` contains macOS system settings and packages.
+- `pkgs/` contains packages that are not sourced directly from nixpkgs.
+- `scripts/` contains checks and update helpers.
 
-## First installation
+## Bootstrap
 
-Install Nix and clone the external Neovim configuration first:
+Install Nix and clone the repository, then run:
 
 ```sh
-git clone --recurse-submodules git@github.com:luckenco/.dotfiles.git ~/Code/.dotfiles
+just bootstrap
 ```
 
-Then run from this repository root:
+The host defaults to `mbp`. To pass it explicitly:
 
 ```sh
-nix --extra-experimental-features "nix-command flakes" \
-  run github:nix-darwin/nix-darwin/master -- \
-  switch --flake .#mbp
+just bootstrap mbp
 ```
 
-If `just` is already available, `just bootstrap` performs the same activation.
+If `nh` is installed, bootstrap uses it. Otherwise it falls back to nix-darwin directly.
 
 ## Daily use
 
-Rebuild without updating inputs:
+Check the flake and build the configuration without activating it:
 
 ```sh
-rebuild
-# or
-nh darwin switch --accept-flake-config --hostname mbp .
+just check
 ```
 
-Build without activating:
+Activate the configuration:
 
 ```sh
-nh darwin build --accept-flake-config --hostname mbp .
+just switch
 ```
 
-Run the complete update workflow from any directory:
+Format the Nix files:
 
 ```sh
-rebuild-update
-```
-
-The shell alias uses absolute repository paths and runs these independently usable stages:
-
-```sh
-just update          # update Grok and flake inputs
-just check           # check the flake and build without activating
-just switch          # activate the validated configuration
-just update-extras   # update Pi extensions and Homebrew packages
-just rebuild-update  # run every stage in order
-```
-
-`just update` refuses to mutate a dirty working copy. The full workflow validates and builds the new configuration before activation.
-
-## Validation and formatting
-
-```sh
-just doctor
 just fmt
+```
+
+Run the flake checks:
+
+```sh
 just lint
 ```
 
-- `just doctor` verifies external applications, fonts, the Neovim repository, and its language servers.
-- `just fmt` formats the Nix source with `nixfmt-tree`.
-- `just lint` evaluates the flake and runs its formatting check.
+Check tools and configuration that live outside Nix:
+
+```sh
+just doctor
+```
+
+## Updating
+
+Update the Grok CLI pin and flake inputs without activating anything:
+
+```sh
+just update
+```
+
+The update refuses to run with a dirty working copy.
+
+Update Pi extensions and Homebrew packages:
+
+```sh
+just update-extras
+```
+
+Run the full update workflow:
+
+```sh
+just rebuild-update
+```
+
+This runs four stages in order:
+
+1. Update repository pins.
+2. Check the flake and build the host.
+3. Activate the configuration.
+4. Update Pi extensions and Homebrew packages.
+
+Each stage is available separately, so a failed update does not force the whole workflow to be repeated.
+
+## What is managed
+
+### Nix and Home Manager
+
+- Shell and terminal tooling
+- Git and Jujutsu
+- Editors and language tooling
+- Zellij
+- Shared packages
+- Theme and user configuration
+
+### nix-darwin
+
+- macOS defaults
+- System and security settings
+- AeroSpace
+- GPG
+- Homebrew
+- Zed
+- macOS-specific packages
 
 ## Package ownership
 
-- Nix owns CLI tools, runtimes, language servers, formatters, and system configuration.
-- Home Manager owns shell and user application configuration.
-- Homebrew owns macOS applications and packages that are fresher or more reliable outside nixpkgs.
-- Native ecosystems own fast-moving project tooling when appropriate, such as Rust toolchains managed through rustup.
+The setup is Nix-first, not Nix-only.
 
-Homebrew updates and cleanup are disabled during normal activation. Run upgrades explicitly through `just update-extras` or `rebuild-update`.
+Stable CLI tools, development tools, and shared configuration belong in Nix. Homebrew handles GUI apps, vendor tools, and packages that currently work better outside nixpkgs.
 
-## Operational notes
+Zed is installed as a macOS app, while its settings are managed declaratively.
 
-- Determinate Nix manages the daemon, so `nix.enable = false`.
-- Homebrew runtime and taps are pinned through flake inputs. Their missing Git metadata causes expected `brew doctor` warnings and should not be repaired imperatively.
-- Home Manager's generated option manpage is disabled because its `options.json` derivation currently loses Nix store-path context.
-- Zed is installed from its official download and owns its updates; Home Manager owns its settings.
-- Neovim is installed by Nix. Home Manager owns `~/.config/nvim`, which points to the mutable Neovim Git repository inside `~/Code/.dotfiles`.
-- Screenshots are stored in `~/Pictures/Screenshots`.
-- The configuration expects the proprietary `TX-02` font to be installed separately.
-- Rust project tooling follows rustup and Cargo rather than duplicating toolchains in Nix.
-
-## TODO
-
-- Add secret management when there are concrete secrets to manage.
-- Re-check Homebrew fallbacks periodically and move packages back to nixpkgs when reliable.
+The Neovim configuration still lives in `~/Code/.dotfiles` and is linked into `~/.config/nvim`. `just doctor` verifies that link and the external tools the editor expects.
