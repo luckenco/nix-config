@@ -68,7 +68,6 @@ in
 
             # Use absolute justfile and working-directory paths so this works from anywhere.
             rebuild-update = ''just --justfile "${darwinConfig.my.machine.repoPath}/justfile" --working-directory "${darwinConfig.my.machine.repoPath}" rebuild-update ${darwinConfig.my.machine.hostName}'';
-            rebuild_update = ''just --justfile "${darwinConfig.my.machine.repoPath}/justfile" --working-directory "${darwinConfig.my.machine.repoPath}" rebuild-update ${darwinConfig.my.machine.hostName}'';
           };
 
           initContent = ''
