@@ -95,6 +95,8 @@ Homebrew updates and cleanup are disabled during normal activation. Run upgrades
 ## TODO
 
 - Decide whether to move the Neovim configuration into Home Manager.
+- Decide whether proprietary fonts should remain documented prerequisites or gain a local verification check.
+- Remove the Herdr packaging override once upstream includes `SKILL.md` in its Nix source fileset.
 - Add secret management when there are concrete secrets to manage.
 - Re-check Homebrew fallbacks periodically and move packages back to nixpkgs when reliable.
 - Investigate the non-blocking pinned Homebrew tap `.git: Permission denied` warning.
