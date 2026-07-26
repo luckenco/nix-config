@@ -106,4 +106,3 @@ Homebrew updates and cleanup are disabled during normal activation. Run upgrades
 - Add secret management when there are concrete secrets to manage.
 - Re-check Homebrew fallbacks periodically and move packages back to nixpkgs when reliable.
 - Investigate the non-blocking pinned Homebrew tap `.git: Permission denied` warning.
-- Investigate the non-blocking Nix `options.json` store-path context warning.

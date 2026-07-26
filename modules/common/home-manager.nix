@@ -8,6 +8,10 @@
       (
         { config, lib, ... }:
         {
+          # Home Manager's generated options.json loses its Nixpkgs store-path
+          # context, producing a warning that Nix may eventually make an error.
+          manual.manpages.enable = false;
+
           xdg = {
             enable = true;
             userDirs.setSessionVariables = true;
