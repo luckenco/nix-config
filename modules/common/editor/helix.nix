@@ -1,11 +1,9 @@
-{ config, lib, ... }:
-let
-  inherit (lib) enabled;
-in
+{ config, ... }:
 {
   home-manager.sharedModules = [
     {
-      programs.helix = enabled {
+      programs.helix = {
+        enable = true;
         settings = {
           theme = config.theme.names.helix;
 

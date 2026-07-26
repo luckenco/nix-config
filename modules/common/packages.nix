@@ -1,83 +1,71 @@
+{ inputs, pkgs, ... }:
 {
-  inputs,
-  lib,
-  pkgs,
-  ...
-}:
-{
-  environment.systemPackages =
-    with pkgs;
-    [
-      # Core utilities
-      stow
-      ripgrep
-      eza
-      fd
-      gh
-      htop
-      tree
-      jq
+  environment.systemPackages = with pkgs; [
+    # Core utilities
+    stow
+    ripgrep
+    eza
+    fd
+    gh
+    htop
+    tree
+    jq
 
-      # File viewers
-      yazi
-      glow
-      bat
-      jless
+    # File viewers
+    yazi
+    glow
+    bat
+    jless
 
-      # Dev tools
-      just
-      tokei
-      nix-output-monitor
-      ast-grep
+    # Dev tools
+    just
+    tokei
+    nix-output-monitor
+    ast-grep
 
-      # Media
-      ffmpeg
+    # Media
+    ffmpeg
 
-      # HTTP & JSON
-      xh
-      jnv
+    # HTTP & JSON
+    xh
+    jnv
 
-      # AI/LLM
-      grok-cli-latest
-      inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
-      llm
+    # AI/LLM
+    (pkgs.callPackage ../../pkgs/grok-cli-latest.nix { })
+    inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
+    llm
 
-      # Documentation
-      tealdeer
+    # Documentation
+    tealdeer
 
-      # Security
-      gnupg
+    # Security
+    gnupg
 
-      # Languages & runtimes
-      nodejs
-      bun
-      uv
-      rustup
-      bacon
-      tree-sitter
+    # Languages & runtimes
+    nodejs
+    bun
+    uv
+    rustup
+    bacon
+    tree-sitter
 
-      # LSP and formatters
-      clang-tools
-      nil
-      nixfmt
-      lua-language-server
-      astro-language-server
-      pyright
-      stylua
-      ruff
-      ty
-      typescript-go
-      biome
+    # LSP and formatters
+    clang-tools
+    nil
+    nixfmt
+    lua-language-server
+    astro-language-server
+    pyright
+    stylua
+    ruff
+    ty
+    typescript-go
+    biome
 
-      # System info
-      fastfetch
+    # System info
+    fastfetch
 
-      # CLIs
-      awscli2
-    ]
-    ++ lib.optionals (!pkgs.stdenv.isDarwin) [
-      gcc
-      azure-cli
-      codex
-    ];
+    # CLIs
+    awscli2
+  ];
 }

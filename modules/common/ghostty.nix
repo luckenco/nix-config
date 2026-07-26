@@ -1,13 +1,11 @@
-{ config, lib, ... }:
-let
-  inherit (lib) enabled mkIf;
-in
-mkIf config.isDesktop {
+{ config, ... }:
+{
   home-manager.sharedModules = [
     {
-      programs.ghostty = enabled {
-        # Don't install Ghostty on Darwin (installed via Homebrew)
-        package = mkIf config.isDarwin null;
+      programs.ghostty = {
+        enable = true;
+        # Ghostty is installed through Homebrew.
+        package = null;
 
         settings = with config.theme; {
           font-family = font.mono;

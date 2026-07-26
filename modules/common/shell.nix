@@ -1,6 +1,5 @@
-{ config, lib, ... }:
+{ config, ... }:
 let
-  inherit (lib) enabled;
   darwinConfig = config;
 in
 {
@@ -11,7 +10,8 @@ in
         hmConfig = config;
       in
       {
-        programs.zsh = enabled {
+        programs.zsh = {
+          enable = true;
           dotDir = "${hmConfig.xdg.configHome}/zsh";
 
           autosuggestion.enable = true;
@@ -31,7 +31,7 @@ in
             EDITOR = "nvim";
           };
 
-          profileExtra = lib.optionalString darwinConfig.isDarwin ''
+          profileExtra = ''
             [[ -f "$HOME/.orbstack/shell/init.zsh" ]] && source "$HOME/.orbstack/shell/init.zsh"
           '';
 
@@ -62,8 +62,6 @@ in
             nd = "nom develop";
             ns = "nom shell";
 
-          }
-          // lib.optionalAttrs darwinConfig.isDarwin {
             # Deterministic rebuild (no flake update)
             rebuild = "ulimit -n 4096 && nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}";
             bootstrap = "( cd ${darwinConfig.my.machine.repoPath} && just bootstrap ${darwinConfig.my.machine.hostName} )"; # subshell so caller PWD is unchanged
@@ -162,7 +160,8 @@ in
           '';
         };
 
-        programs.starship = enabled {
+        programs.starship = {
+          enable = true;
           enableZshIntegration = true;
           settings = {
             command_timeout = 1000;

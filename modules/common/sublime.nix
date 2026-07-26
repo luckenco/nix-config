@@ -1,25 +1,9 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ config, ... }:
 let
-  inherit (lib) mkIf;
   systemConfig = config;
-
-  sublimeConfigRoot =
-    if systemConfig.isDarwin then
-      "Library/Application Support/Sublime Text"
-    else
-      ".config/sublime-text";
+  sublimeConfigRoot = "Library/Application Support/Sublime Text";
 in
 {
-  nixpkgs.config.allowUnfreePredicate = mkIf (config.isLinux && config.isDesktop) (
-    pkg: builtins.elem (lib.getName pkg) [ "sublimetext4" ]
-  );
-
-  environment.systemPackages = mkIf (config.isLinux && config.isDesktop) [ pkgs.sublime4 ];
 
   home-manager.sharedModules = [
     (
@@ -29,7 +13,7 @@ in
         oldDotfilesRoot = "${config.home.homeDirectory}/Code/.dotfiles/sublime-text/Library/Application Support/Sublime Text";
         oldRelativeRoot = "../../Code/.dotfiles/sublime-text/Library/Application Support/Sublime Text";
       in
-      mkIf systemConfig.isDesktop {
+      {
         home.activation.unlinkOldSublimeDotfilesLink = lib.hm.dag.entryBefore [ "checkLinkTargets" ] ''
           target=${lib.escapeShellArg configRoot}
           old_dotfiles_root=${lib.escapeShellArg oldDotfilesRoot}

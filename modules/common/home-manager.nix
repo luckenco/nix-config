@@ -1,7 +1,3 @@
-{ lib, ... }:
-let
-  inherit (lib) enabled;
-in
 {
   home-manager = {
     useGlobalPkgs = true;
@@ -12,7 +8,8 @@ in
       (
         { config, lib, ... }:
         {
-          xdg = enabled {
+          xdg = {
+            enable = true;
             userDirs.setSessionVariables = true;
           };
 

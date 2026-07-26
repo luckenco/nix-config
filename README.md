@@ -1,134 +1,91 @@
-# NixOS + nix-darwin Configuration
+# macOS Development Configuration
 
-Multi-host Nix flake for Linux (`nixos`) and macOS (`nix-darwin`), with shared Home Manager modules.
+Declarative development environment for an Apple Silicon Mac using nix-darwin, Home Manager, and Homebrew.
 
-## Repository layout
+## Layout
 
 ```text
 .
 ├── flake.nix
-├── flake.lock
-├── hosts/
-│   ├── mbp/
-│   ├── vm/
-│   └── vps/
-├── lib/
+├── hosts/mbp/
 ├── modules/
 │   ├── common/
-│   ├── linux/
 │   └── darwin/
-└── keys/
+├── pkgs/
+└── scripts/
 ```
 
-## Prerequisites
+Modules are imported explicitly through `modules/common/default.nix` and `modules/darwin/default.nix`. A future platform can add its own module directory and flake configuration without changing the macOS setup.
 
-This flake uses `pipe-operators`, so Nix experimental features must include:
+## First installation
+
+Install Nix first, then run from the repository root:
 
 ```sh
-mkdir -p ~/.config/nix
-echo "experimental-features = nix-command flakes pipe-operators" > ~/.config/nix/nix.conf
+nix --extra-experimental-features "nix-command flakes" \
+  run github:nix-darwin/nix-darwin/master -- \
+  switch --flake .#mbp
 ```
 
-On macOS hosts using Determinate Nix (`nix.enable = false`), the flake also writes the same feature set to `/etc/nix/nix.custom.conf` after a successful rebuild.
+If `just` is already available, `just bootstrap` performs the same activation.
 
-## Hosts
+## Daily use
 
-| Host | Platform | Type | User |
-|------|----------|------|------|
-| `mbp` | `aarch64-darwin` | desktop | `cal` |
-| `vm` | `aarch64-linux` | desktop | `morpheus` |
-| `vps` | `x86_64-linux` | server | `morpheus` |
-
-## Usage
-
-### macOS (`nix-darwin`)
-
-First install:
-
-```sh
-just bootstrap
-# or explicitly
-just bootstrap mbp
-```
-
-Daily rebuilds:
+Rebuild without updating inputs:
 
 ```sh
 rebuild
-# equivalent, from the repo root:
-ulimit -n 4096 || true
+# or
 nh darwin switch --accept-flake-config --hostname mbp .
+```
 
-# build-only validation:
+Build without activating:
+
+```sh
 nh darwin build --accept-flake-config --hostname mbp .
 ```
 
-Update flake inputs and re-apply:
+Update inputs, rebuild, and update external package managers:
 
 ```sh
 rebuild-update
-# equivalent, in outline:
-ulimit -n 4096 || true
-bash scripts/update-grok-cli
-nix --accept-flake-config fmt pkgs/grok-cli-latest.nix
-nix flake update --accept-flake-config --flake .
-nh darwin switch --accept-flake-config --hostname mbp .
-pi update --extensions # when pi is installed
-HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --yes
 ```
 
-### Linux (`nixos`)
+This command updates the custom Grok package, flake inputs, Pi extensions, and Homebrew packages. These stages intentionally remain separate from normal rebuilds.
 
-Rebuild:
-
-```sh
-nh os switch .
-nh os build .
-```
-
-## Formatting and linting
+## Formatting and validation
 
 ```sh
 just fmt
 just lint
 ```
 
-- `just fmt` runs `nix --accept-flake-config fmt .` (powered by the `flake.nix` `formatter` output using `nixfmt-tree`).
-- `just lint` runs `nix --accept-flake-config flake check`.
+- `just fmt` formats the Nix source with `nixfmt-tree`.
+- `just lint` evaluates the flake and runs its formatting check.
 
-## What is configured
+## Package ownership
 
-- Shared modules for shell, tooling, editor defaults, git, theme, and terminal UX
-- Linux modules for networking, locale, nix-ld, desktop/session behavior, and Linux-only packages
-- Darwin modules for defaults, Homebrew integration, AeroSpace, GPG, Zed, security, shell environment, Dock relaunch handling, and Darwin-specific packages
-- Flake host auto-discovery via `hosts/*`
-- Expanded macOS defaults for developer UX (input autocorrect off, faster UI animations, Finder and Dock tuning, screenshot path/type, trackpad behavior, lock/login defaults)
+- Nix owns CLI tools, runtimes, language servers, formatters, and system configuration.
+- Home Manager owns shell and user application configuration.
+- Homebrew owns macOS applications and packages that are fresher or more reliable outside nixpkgs.
+- Native ecosystems own fast-moving project tooling when appropriate, such as Rust toolchains managed through rustup.
+
+Homebrew updates and cleanup are disabled during normal activation. Run upgrades explicitly through `rebuild-update`.
 
 ## Operational notes
 
-- Branch policy: the repo currently tracks `nixpkgs-unstable` with `home-manager/master` so Nixpkgs and Home Manager stay on the same moving release line. For a quieter stable base, switch them together to `github:NixOS/nixpkgs/nixos-26.05` and `github:nix-community/home-manager/release-26.05`.
-- zsh customization is managed through Home Manager (`programs.zsh`), not `/etc/zshrc` overrides.
-- Linux firewall defaults to enabled in shared Linux networking config.
-- Darwin Homebrew is managed declaratively via `nix-homebrew`, `brew-src`, and `homebrew.*` settings.
-- Homebrew auto-update/upgrade/cleanup are disabled during activation for deterministic, non-disruptive rebuilds.
-- Immutable Homebrew taps require `/opt/homebrew/Library/Taps` to be the `nix-homebrew` symlink; when migrating an existing install, move any real `Taps` directory aside once before activation.
-- When updating Homebrew inputs, move `brew-src`, `homebrew-core`, and `homebrew-cask` together so the pinned runtime stays compatible with the pinned tap DSL.
-- Package ownership is Nix-first, not Nix-only: stable CLI/dev tools and shared config should live in Nix; Homebrew is for GUI apps, broken Darwin packages, and fast-moving vendor/agent tools.
-- Zed on Darwin is installed from the official download and auto-updated by the app; nix-darwin only manages `~/.config/zed/settings.json`.
-- Rust project tooling follows `rustup`/Cargo when that is the natural upstream workflow, so global Cargo CLIs such as `sqlx-cli`, `cargo-binstall`, and `rustowl` are intentionally not forced into Nix.
-- `ty` in Zed config is pinned to the Nix package path (`${pkgs.ty}/bin/ty`).
-- `my.secrets.enable` defaults to `false`; enable it only after adding an age key at `~/.config/sops/age/keys.txt`.
-- Screenshots are configured to `${homeDir}/Pictures/Screenshots` and that directory is created during activation.
-- Neovim is currently installed by Nix, but `~/.config/nvim` is still owned by the stowed dotfiles repo rather than Home Manager.
+- Determinate Nix manages the daemon, so `nix.enable = false`.
+- Homebrew runtime and taps are pinned through flake inputs.
+- Zed is installed from its official download and owns its updates; Home Manager owns its settings.
+- Neovim is installed by Nix, while `~/.config/nvim` remains owned by the stowed dotfiles repository.
+- Screenshots are stored in `~/Pictures/Screenshots`.
+- The configuration expects the `TX-02` and MonoLisa fonts to be installed separately.
+- Rust project tooling follows rustup and Cargo rather than duplicating toolchains in Nix.
 
 ## TODO
 
-- Revisit whether the repo should stay on `nixpkgs-unstable`/`home-manager/master` or move back to matched stable branches.
-- Decide and implement secret management, likely with `sops-nix`, before enabling `my.secrets.enable` on `mbp`.
-- Rotate any API keys that have lived in local shell files before moving them into managed secrets.
-- Install or reconcile declared Homebrew casks that are not yet present locally.
+- Decide whether to move the Neovim configuration into Home Manager.
+- Add secret management when there are concrete secrets to manage.
+- Re-check Homebrew fallbacks periodically and move packages back to nixpkgs when reliable.
 - Investigate the non-blocking pinned Homebrew tap `.git: Permission denied` warning.
 - Investigate the non-blocking Nix `options.json` store-path context warning.
-- `hosts/vps/hardware-configuration.nix` is still a placeholder and must be replaced with real hardware config before production deployment.
-- Re-check Homebrew fallbacks (`gitui`, `yt-dlp`, `azure-cli`) periodically and move back to nixpkgs when stable on Darwin.
-- Migrate the Neovim config from the dotfiles repo into Home Manager, then let Home Manager take ownership of `~/.config/nvim`.

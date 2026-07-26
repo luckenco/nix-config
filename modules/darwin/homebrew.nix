@@ -1,15 +1,7 @@
+{ config, inputs, ... }:
 {
-  homebrew-core,
-  homebrew-cask,
-  config,
-  lib,
-  ...
-}:
-let
-  inherit (lib) enabled;
-in
-{
-  homebrew = enabled {
+  homebrew = {
+    enable = true;
     onActivation = {
       # Keep rebuilds deterministic and avoid disruptive cleanup failures.
       # Do Homebrew upgrades explicitly when desired.
@@ -58,13 +50,14 @@ in
     };
   };
 
-  nix-homebrew = enabled {
+  nix-homebrew = {
+    enable = true;
     user = config.system.primaryUser;
     autoMigrate = true;
 
     taps = {
-      "homebrew/homebrew-core" = homebrew-core;
-      "homebrew/homebrew-cask" = homebrew-cask;
+      "homebrew/homebrew-core" = inputs.homebrew-core;
+      "homebrew/homebrew-cask" = inputs.homebrew-cask;
     };
 
     mutableTaps = false;

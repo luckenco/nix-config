@@ -1,16 +1,17 @@
 {
   config,
-  lib,
+  inputs,
   pkgs,
   ...
 }:
 let
-  inherit (lib) enabled;
+  zjstatus = inputs.zjstatus.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   home-manager.sharedModules = [
     {
-      programs.zellij = enabled {
+      programs.zellij = {
+        enable = true;
         enableZshIntegration = false;
 
         settings = {
@@ -23,7 +24,7 @@ in
           layout {
               default_tab_template {
                   pane size=1 borderless=true {
-                      plugin location="file:${pkgs.zjstatus}/bin/zjstatus.wasm" {
+                      plugin location="file:${zjstatus}/bin/zjstatus.wasm" {
                           format_left   "{mode} {session}"
                           format_center "{tabs}"
                           format_right  "{datetime}"

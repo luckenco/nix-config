@@ -1,11 +1,10 @@
-{ pkgs, lib, ... }:
-let
-  inherit (lib) enabled;
-in
+{ pkgs, ... }:
 {
   home-manager.sharedModules = [
     {
-      programs.gpg = enabled { };
+      programs.gpg = {
+        enable = true;
+      };
 
       # Configure gpg-agent to use pinentry-mac
       home.file.".gnupg/gpg-agent.conf".text = ''

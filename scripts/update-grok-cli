@@ -33,15 +33,11 @@ prefetch_hash() {
 }
 
 export GROK_VERSION="$version"
-export GROK_HASH_MACOS_AARCH64="$(prefetch_hash macos-aarch64)"
-export GROK_HASH_LINUX_AARCH64="$(prefetch_hash linux-aarch64)"
-export GROK_HASH_LINUX_X86_64="$(prefetch_hash linux-x86_64)"
+export GROK_HASH="$(prefetch_hash macos-aarch64)"
 
 perl -0pi -e '
   s/version = "[^"]+";/version = "$ENV{GROK_VERSION}";/;
-  s/(aarch64-darwin = \{\n\s+platform = "macos-aarch64";\n\s+hash = ")[^"]+(";)/$1$ENV{GROK_HASH_MACOS_AARCH64}$2/s;
-  s/(aarch64-linux = \{\n\s+platform = "linux-aarch64";\n\s+hash = ")[^"]+(";)/$1$ENV{GROK_HASH_LINUX_AARCH64}$2/s;
-  s/(x86_64-linux = \{\n\s+platform = "linux-x86_64";\n\s+hash = ")[^"]+(";)/$1$ENV{GROK_HASH_LINUX_X86_64}$2/s;
+  s/hash = "[^"]+";/hash = "$ENV{GROK_HASH}";/;
 ' "$package_file"
 
 echo "Pinned Grok CLI $version in $package_file"

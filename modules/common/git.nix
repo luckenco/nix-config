@@ -1,7 +1,4 @@
-{ config, lib, ... }:
-let
-  inherit (lib) enabled;
-in
+{ config, ... }:
 {
   home-manager.sharedModules = [
     {
@@ -37,14 +34,13 @@ in
         gui = "gitui";
       };
 
-      programs.git = enabled {
+      programs.git = {
+        enable = true;
         signing = {
           key = "7B0964DD92945BF9";
           format = "openpgp";
           signByDefault = true;
-        }
-        // lib.optionalAttrs config.isDarwin {
-          signer = "/etc/profiles/per-user/${config.system.primaryUser or "cal"}/bin/gpg";
+          signer = "/etc/profiles/per-user/${config.system.primaryUser}/bin/gpg";
         };
 
         settings = {
@@ -61,7 +57,8 @@ in
         };
       };
 
-      programs.difftastic = enabled {
+      programs.difftastic = {
+        enable = true;
         git.enable = true;
         options.background = "dark";
       };

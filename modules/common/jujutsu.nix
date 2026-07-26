@@ -1,7 +1,3 @@
-{ lib, ... }:
-let
-  inherit (lib) enabled;
-in
 {
   home-manager.sharedModules = [
     {
@@ -13,7 +9,8 @@ in
         jds = "jj describe";
       };
 
-      programs.jujutsu = enabled {
+      programs.jujutsu = {
+        enable = true;
         settings = {
           user = {
             name = "Constantin Luckenbach";

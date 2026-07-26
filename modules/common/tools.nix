@@ -1,38 +1,38 @@
-{ lib, pkgs, ... }:
-let
-  inherit (lib) enabled;
-in
+{ pkgs, ... }:
 {
   home-manager.sharedModules = [
     {
-      programs.bat = enabled { };
+      programs.bat = {
+        enable = true;
+      };
 
-      programs.fzf = enabled {
+      programs.fzf = {
+        enable = true;
         enableZshIntegration = true;
         historyWidget.command = "";
       };
 
-      programs.direnv = enabled {
+      programs.direnv = {
+        enable = true;
         enableZshIntegration = true;
         nix-direnv.enable = true;
-        package =
-          if pkgs.stdenv.isDarwin then
-            pkgs.direnv.overrideAttrs {
-              doCheck = false;
-            }
-          else
-            pkgs.direnv;
+        package = pkgs.direnv.overrideAttrs {
+          doCheck = false;
+        };
       };
 
-      programs.zoxide = enabled {
+      programs.zoxide = {
+        enable = true;
         enableZshIntegration = true;
       };
 
-      programs.atuin = enabled {
+      programs.atuin = {
+        enable = true;
         enableZshIntegration = true;
       };
 
-      programs.yazi = enabled {
+      programs.yazi = {
+        enable = true;
         enableZshIntegration = true;
         shellWrapperName = "y";
       };
