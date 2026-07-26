@@ -66,13 +66,9 @@ in
             rebuild = "ulimit -n 4096 && nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}";
             bootstrap = "( cd ${darwinConfig.my.machine.repoPath} && just bootstrap ${darwinConfig.my.machine.hostName} )"; # subshell so caller PWD is unchanged
 
-            # Flake inputs pin the Homebrew runtime and taps, so avoid `brew update` against immutable Nix store sources.
-            # Logic is in scripts/rebuild-update (invoked via absolute path) so the alias
-            # text that zsh substitutes for the live shell never performs a `cd`. The script
-            # can safely `cd` inside its own process. This fixes the symptom even for the
-            # invocation that activates the generation containing the new alias definition.
-            rebuild-update = "ulimit -n 4096 && bash ${darwinConfig.my.machine.repoPath}/scripts/rebuild-update ${darwinConfig.my.machine.repoPath} ${darwinConfig.my.machine.hostName}";
-            rebuild_update = "ulimit -n 4096 && bash ${darwinConfig.my.machine.repoPath}/scripts/rebuild-update ${darwinConfig.my.machine.repoPath} ${darwinConfig.my.machine.hostName}";
+            # Use absolute justfile and working-directory paths so this works from anywhere.
+            rebuild-update = ''just --justfile "${darwinConfig.my.machine.repoPath}/justfile" --working-directory "${darwinConfig.my.machine.repoPath}" rebuild-update ${darwinConfig.my.machine.hostName}'';
+            rebuild_update = ''just --justfile "${darwinConfig.my.machine.repoPath}/justfile" --working-directory "${darwinConfig.my.machine.repoPath}" rebuild-update ${darwinConfig.my.machine.hostName}'';
           };
 
           initContent = ''

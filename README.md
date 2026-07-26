@@ -45,13 +45,23 @@ Build without activating:
 nh darwin build --accept-flake-config --hostname mbp .
 ```
 
-Update inputs, rebuild, and update external package managers:
+Run the complete update workflow from any directory:
 
 ```sh
 rebuild-update
 ```
 
-This command updates the custom Grok package, flake inputs, Pi extensions, and Homebrew packages. These stages intentionally remain separate from normal rebuilds.
+The shell alias uses absolute repository paths and runs these independently usable stages:
+
+```sh
+just update          # update Grok and flake inputs
+just check           # check the flake and build without activating
+just switch          # activate the validated configuration
+just update-extras   # update Pi extensions and Homebrew packages
+just rebuild-update  # run every stage in order
+```
+
+`just update` refuses to mutate a dirty working copy. The full workflow validates and builds the new configuration before activation.
 
 ## Formatting and validation
 
@@ -70,7 +80,7 @@ just lint
 - Homebrew owns macOS applications and packages that are fresher or more reliable outside nixpkgs.
 - Native ecosystems own fast-moving project tooling when appropriate, such as Rust toolchains managed through rustup.
 
-Homebrew updates and cleanup are disabled during normal activation. Run upgrades explicitly through `rebuild-update`.
+Homebrew updates and cleanup are disabled during normal activation. Run upgrades explicitly through `just update-extras` or `rebuild-update`.
 
 ## Operational notes
 

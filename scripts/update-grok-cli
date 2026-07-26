@@ -1,15 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Support jj (jujutsu) repos (primary here) as well as plain git.
-# Falls back gracefully if neither is present.
-if command -v jj >/dev/null 2>&1 && jj root >/dev/null 2>&1; then
-  repo_root="$(jj root)"
-elif command -v git >/dev/null 2>&1; then
-  repo_root="$(git rev-parse --show-toplevel)"
-else
-  repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-fi
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_root"
 
 package_file="pkgs/grok-cli-latest.nix"
