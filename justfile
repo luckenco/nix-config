@@ -9,6 +9,9 @@ bootstrap host="mbp":
       nix --accept-flake-config run nix-darwin -- switch --flake .#{{ host }}; \
     fi
 
+doctor:
+    @bash scripts/doctor
+
 fmt:
     @nix --accept-flake-config fmt .
 

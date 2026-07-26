@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+failed=0
+
+pass() {
+  printf 'ok: %s\n' "$1"
+}
+
+fail() {
+  printf 'missing: %s\n' "$1" >&2
+  failed=1
+}
+
+require_cmd() {
+  if command -v "$1" >/dev/null 2>&1; then
+    pass "$1"
+  else
+    fail "$1"
+  fi
+}
+
+nvim_source="$HOME/Code/.dotfiles/nvim/.config/nvim"
+nvim_target="$HOME/.config/nvim"
+
+if [[ -d "$nvim_source" && -e "$nvim_source/.git" ]]; then
+  pass "Neovim configuration repository"
+else
+  fail "$nvim_source"
+fi
+
+if [[ -e "$nvim_target" && "$(realpath "$nvim_target")" == "$nvim_source" ]]; then
+  pass "Neovim configuration link"
+else
+  fail "$nvim_target -> $nvim_source"
+fi
+
+for command in \
+  astro-ls \
+  clangd \
+  lua-language-server \
+  nvim \
+  ruff \
+  rust-analyzer \
+  tsgo \
+  ty; do
+  require_cmd "$command"
+done
+
+if [[ -f "$HOME/Library/Fonts/TX-02-Regular.otf" ]]; then
+  pass "TX-02 font"
+else
+  fail "TX-02 font"
+fi
+
+if [[ -d /Applications/Zed.app ]]; then
+  pass "Zed"
+else
+  fail "/Applications/Zed.app"
+fi
+
+if ((failed)); then
+  exit 1
+fi

@@ -19,7 +19,13 @@ Modules are imported explicitly through `modules/common/default.nix` and `module
 
 ## First installation
 
-Install Nix first, then run from the repository root:
+Install Nix and clone the external Neovim configuration first:
+
+```sh
+git clone --recurse-submodules git@github.com:luckenco/.dotfiles.git ~/Code/.dotfiles
+```
+
+Then run from this repository root:
 
 ```sh
 nix --extra-experimental-features "nix-command flakes" \
@@ -63,13 +69,15 @@ just rebuild-update  # run every stage in order
 
 `just update` refuses to mutate a dirty working copy. The full workflow validates and builds the new configuration before activation.
 
-## Formatting and validation
+## Validation and formatting
 
 ```sh
+just doctor
 just fmt
 just lint
 ```
 
+- `just doctor` verifies external applications, fonts, the Neovim repository, and its language servers.
 - `just fmt` formats the Nix source with `nixfmt-tree`.
 - `just lint` evaluates the flake and runs its formatting check.
 
@@ -87,15 +95,13 @@ Homebrew updates and cleanup are disabled during normal activation. Run upgrades
 - Determinate Nix manages the daemon, so `nix.enable = false`.
 - Homebrew runtime and taps are pinned through flake inputs.
 - Zed is installed from its official download and owns its updates; Home Manager owns its settings.
-- Neovim is installed by Nix, while `~/.config/nvim` remains owned by the stowed dotfiles repository.
+- Neovim is installed by Nix. Home Manager owns `~/.config/nvim`, which points to the mutable Neovim Git repository inside `~/Code/.dotfiles`.
 - Screenshots are stored in `~/Pictures/Screenshots`.
-- The configuration expects the `TX-02` and MonoLisa fonts to be installed separately.
+- The configuration expects the proprietary `TX-02` font to be installed separately.
 - Rust project tooling follows rustup and Cargo rather than duplicating toolchains in Nix.
 
 ## TODO
 
-- Decide whether to move the Neovim configuration into Home Manager.
-- Decide whether proprietary fonts should remain documented prerequisites or gain a local verification check.
 - Remove the Herdr packaging override once upstream includes `SKILL.md` in its Nix source fileset.
 - Add secret management when there are concrete secrets to manage.
 - Re-check Homebrew fallbacks periodically and move packages back to nixpkgs when reliable.

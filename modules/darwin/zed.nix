@@ -76,7 +76,7 @@
           relative_line_numbers = "enabled";
 
           terminal = {
-            font_family = "MonoLisa Nerd Font";
+            font_family = font.mono;
             font_size = 14;
           };
 
