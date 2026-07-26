@@ -8,13 +8,10 @@
     fd
     gh
     htop
-    tree
     jq
 
     # File viewers
-    yazi
     glow
-    bat
     jless
 
     # Dev tools
@@ -32,14 +29,15 @@
 
     # AI/LLM
     (pkgs.callPackage ../../pkgs/grok-cli-latest.nix { })
-    inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
-    llm
+    (inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
+      # Upstream's source fileset omits the skill embedded by src/main.rs.
+      postPatch = (old.postPatch or "") + ''
+        cp ${inputs.herdr}/SKILL.md SKILL.md
+      '';
+    }))
 
     # Documentation
     tealdeer
-
-    # Security
-    gnupg
 
     # Languages & runtimes
     nodejs
@@ -55,7 +53,6 @@
     nixfmt
     lua-language-server
     astro-language-server
-    pyright
     stylua
     ruff
     ty

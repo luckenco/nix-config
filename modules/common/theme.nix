@@ -9,7 +9,6 @@
       # themes use different names for the same scheme.
       names = {
         ghostty = "Gruvbox Dark";
-        helix = "gruvbox_dark_hard";
         sublime = {
           colorScheme = "USGC-POLYIMIDE-ST.sublime-color-scheme";
           uiTheme = "Adaptive.sublime-theme";
