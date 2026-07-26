@@ -29,12 +29,7 @@
 
     # AI/LLM
     (pkgs.callPackage ../../pkgs/grok-cli-latest.nix { })
-    (inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
-      # Upstream's source fileset omits the skill embedded by src/main.rs.
-      postPatch = (old.postPatch or "") + ''
-        cp ${inputs.herdr}/SKILL.md SKILL.md
-      '';
-    }))
+    inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     # Documentation
     tealdeer

@@ -93,7 +93,8 @@ Homebrew updates and cleanup are disabled during normal activation. Run upgrades
 ## Operational notes
 
 - Determinate Nix manages the daemon, so `nix.enable = false`.
-- Homebrew runtime and taps are pinned through flake inputs.
+- Homebrew runtime and taps are pinned through flake inputs. Their missing Git metadata causes expected `brew doctor` warnings and should not be repaired imperatively.
+- Home Manager's generated option manpage is disabled because its `options.json` derivation currently loses Nix store-path context.
 - Zed is installed from its official download and owns its updates; Home Manager owns its settings.
 - Neovim is installed by Nix. Home Manager owns `~/.config/nvim`, which points to the mutable Neovim Git repository inside `~/Code/.dotfiles`.
 - Screenshots are stored in `~/Pictures/Screenshots`.
@@ -102,7 +103,5 @@ Homebrew updates and cleanup are disabled during normal activation. Run upgrades
 
 ## TODO
 
-- Remove the Herdr packaging override once upstream includes `SKILL.md` in its Nix source fileset.
 - Add secret management when there are concrete secrets to manage.
 - Re-check Homebrew fallbacks periodically and move packages back to nixpkgs when reliable.
-- Investigate the non-blocking pinned Homebrew tap `.git: Permission denied` warning.
