@@ -21,10 +21,10 @@ lint:
 update-grok:
     @bash scripts/update-grok-cli
 
-# Update repository pins without activating anything. An uncommitted lockfile is allowed for rolling updates.
+# Update repository pins without activating anything. Uncommitted pin updates are allowed to keep rolling.
 update:
-    @if [ -n "$(jj diff --summary 'all() ~ file:flake.lock')" ]; then \
-      echo "Refusing to update with changes outside flake.lock:" >&2; \
+    @if [ -n "$(jj diff --summary 'all() ~ file:flake.lock ~ file:pkgs/grok-cli-latest.nix')" ]; then \
+      echo "Refusing to update with changes outside managed pin files:" >&2; \
       jj status >&2; \
       exit 1; \
     fi

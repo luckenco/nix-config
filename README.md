@@ -85,7 +85,7 @@ Update the Grok CLI pin and flake inputs without activating anything:
 just update
 ```
 
-The update refuses to run with a dirty working copy.
+The update allows uncommitted changes to `flake.lock` and the Grok CLI pin, but refuses changes to other files.
 
 Update Pi extensions and Homebrew packages:
 
