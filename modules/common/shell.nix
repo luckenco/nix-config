@@ -10,6 +10,10 @@ in
         hmConfig = config;
       in
       {
+        home.file.".npmrc".text = ''
+          prefix=${hmConfig.home.homeDirectory}/.local
+        '';
+
         programs.zsh = {
           enable = true;
           dotDir = "${hmConfig.xdg.configHome}/zsh";
