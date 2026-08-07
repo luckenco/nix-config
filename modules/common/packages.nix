@@ -47,8 +47,8 @@
     nil
     nixfmt
     lua-language-server
-    astro-language-server
     stylua
+    taplo
     ruff
     ty
     typescript-go
