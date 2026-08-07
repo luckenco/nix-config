@@ -75,19 +75,57 @@
 
       formatter.${system} = pkgs.nixfmt-tree;
 
-      checks.${system}.formatting =
-        pkgs.runCommand "nixfmt-check"
-          {
-            src = ./.;
-            nativeBuildInputs = with pkgs; [
-              findutils
-              nixfmt
-            ];
-          }
-          ''
-            cd "$src"
-            find . -name '*.nix' -print0 | xargs -0 nixfmt --check
-            touch "$out"
-          '';
+      checks.${system} = {
+        deadnix =
+          pkgs.runCommand "deadnix-check"
+            {
+              src = ./.;
+              nativeBuildInputs = [ pkgs.deadnix ];
+            }
+            ''
+              cd "$src"
+              deadnix --fail .
+              touch "$out"
+            '';
+
+        formatting =
+          pkgs.runCommand "nixfmt-check"
+            {
+              src = ./.;
+              nativeBuildInputs = with pkgs; [
+                findutils
+                nixfmt
+              ];
+            }
+            ''
+              cd "$src"
+              find . -name '*.nix' -print0 | xargs -0 nixfmt --check
+              touch "$out"
+            '';
+
+        shellcheck =
+          pkgs.runCommand "shellcheck-check"
+            {
+              src = ./scripts;
+              nativeBuildInputs = [ pkgs.shellcheck ];
+            }
+            ''
+              cd "$src"
+              shellcheck *
+              touch "$out"
+            '';
+
+        shfmt =
+          pkgs.runCommand "shfmt-check"
+            {
+              src = ./scripts;
+              nativeBuildInputs = [ pkgs.shfmt ];
+            }
+            ''
+              cd "$src"
+              shfmt -d -i 2 -ci *
+              touch "$out"
+            '';
+      };
     };
 }

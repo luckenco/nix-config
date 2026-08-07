@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ pkgs, ... }:
 let
   managedPiSettings = (pkgs.formats.json { }).generate "pi-agent-managed-settings.json" {
     packages = [

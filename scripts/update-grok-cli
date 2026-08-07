@@ -20,12 +20,13 @@ fi
 
 prefetch_hash() {
   local platform="$1"
-  nix store prefetch-file --json "https://x.ai/cli/grok-${version}-${platform}" \
-    | sed -n 's/.*"hash":"\([^"]*\)".*/\1/p'
+  nix store prefetch-file --json "https://x.ai/cli/grok-${version}-${platform}" |
+    sed -n 's/.*"hash":"\([^"]*\)".*/\1/p'
 }
 
 export GROK_VERSION="$version"
-export GROK_HASH="$(prefetch_hash macos-aarch64)"
+GROK_HASH="$(prefetch_hash macos-aarch64)"
+export GROK_HASH
 
 perl -0pi -e '
   s/version = "[^"]+";/version = "$ENV{GROK_VERSION}";/;

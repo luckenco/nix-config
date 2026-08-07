@@ -19,6 +19,9 @@
     tokei
     nix-output-monitor
     ast-grep
+    deadnix
+    shellcheck
+    shfmt
 
     # Media
     ffmpeg
