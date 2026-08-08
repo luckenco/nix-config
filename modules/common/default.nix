@@ -13,6 +13,5 @@
     ./system.nix
     ./theme.nix
     ./tools.nix
-    ./zellij.nix
   ];
 }

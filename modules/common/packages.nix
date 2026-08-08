@@ -2,7 +2,6 @@
 {
   environment.systemPackages = with pkgs; [
     # Core utilities
-    stow
     ripgrep
     eza
     fd
