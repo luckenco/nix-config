@@ -1,5 +1,11 @@
 {
-  programs.zsh.enable = true;
+  programs.zsh = {
+    enable = true;
+    enableBashCompletion = false;
+    enableCompletion = false;
+    enableGlobalCompInit = false;
+    promptInit = "";
+  };
 
   environment.variables = {
     CC = "/usr/bin/clang";
