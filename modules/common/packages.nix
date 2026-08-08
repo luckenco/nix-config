@@ -43,6 +43,10 @@
     uv
     rustup
     bacon
+    cargo-audit
+    cargo-nextest
+    probe-rs-tools
+    sqlx-cli
     tree-sitter
 
     # LSP and formatters
@@ -62,5 +66,6 @@
 
     # CLIs
     awscli2
+    cloudflared
   ];
 }
