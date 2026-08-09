@@ -18,7 +18,6 @@
       "livekit-cli"
       "mas"
       "mole"
-      "opencode" # Coding agent - homebrew updates faster than nixpkgs
       "yt-dlp" # nixpkgs pull-in currently broken on darwin via python jeepney/secretstorage chain
     ];
 
@@ -26,7 +25,6 @@
     # releases, while modules/darwin/zed.nix manages its settings.
     casks = [
       "anki"
-      "claude-code" # Coding agent - homebrew updates faster than nixpkgs
       "codex" # Coding agent - cask, not brew
       "figma"
       "gcloud-cli"
