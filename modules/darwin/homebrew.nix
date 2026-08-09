@@ -10,15 +10,11 @@
       cleanup = "none";
     };
 
-    # TODO: Periodically check if these become available/fixed in nixpkgs
+    # Keep tools here when Homebrew is newer or nixpkgs is unsuitable.
     brews = [
-      "azure-cli" # nixpkgs build currently failing on darwin
       "cocoapods"
-      "gitui" # Broken in nixpkgs on aarch64-darwin
-      "livekit-cli"
       "mas"
-      "mole"
-      "yt-dlp" # nixpkgs pull-in currently broken on darwin via python jeepney/secretstorage chain
+      "mole" # The nixpkgs package with this name is a different program
     ];
 
     # Zed is intentionally omitted: install the official app for fresher

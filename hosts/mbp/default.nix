@@ -28,7 +28,7 @@ in
     home = {
       username = machine.userName;
       homeDirectory = machine.homeDir;
-      stateVersion = "25.11";
+      stateVersion = "26.11";
     };
 
     programs.home-manager.enable = true;

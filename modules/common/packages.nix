@@ -14,6 +14,7 @@
     jless
 
     # Dev tools
+    gitui
     just
     tokei
     nix-output-monitor
@@ -24,6 +25,7 @@
 
     # Media
     ffmpeg
+    yt-dlp
 
     # HTTP & JSON
     xh
@@ -65,6 +67,8 @@
 
     # CLIs
     awscli2
+    azure-cli
     cloudflared
+    livekit-cli
   ];
 }
