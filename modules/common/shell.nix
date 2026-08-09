@@ -68,7 +68,7 @@ in
             ns = "nom shell";
 
             # Deterministic rebuild (no flake update)
-            rebuild = "ulimit -n 4096 && nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}";
+            rebuild = "ulimit -n unlimited && nh darwin switch --accept-flake-config --hostname ${darwinConfig.my.machine.hostName} ${darwinConfig.my.machine.repoPath}";
             bootstrap = "( cd ${darwinConfig.my.machine.repoPath} && just bootstrap ${darwinConfig.my.machine.hostName} )"; # subshell so caller PWD is unchanged
 
             # Use absolute justfile and working-directory paths so this works from anywhere.

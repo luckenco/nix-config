@@ -28,20 +28,20 @@ update:
       jj status >&2; \
       exit 1; \
     fi
-    @ulimit -n 4096 || true; \
+    @ulimit -n unlimited || true; \
       bash scripts/update-grok-cli; \
       nix --accept-flake-config fmt pkgs/grok-cli-latest.nix; \
       nix flake update --accept-flake-config --flake .
 
 # Validate the flake and build the host without activating it.
 check host="mbp":
-    @ulimit -n 4096 || true; \
+    @ulimit -n unlimited || true; \
       nix --accept-flake-config flake check; \
       nh darwin build --accept-flake-config --hostname {{ host }} .
 
 # Activate an already-validated configuration.
 switch host="mbp":
-    @ulimit -n 4096 || true; \
+    @ulimit -n unlimited || true; \
       nh darwin switch --accept-flake-config --hostname {{ host }} .
 
 # Update state managed outside Nix.
