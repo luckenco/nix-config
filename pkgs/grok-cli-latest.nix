@@ -5,7 +5,7 @@
 }:
 
 let
-  version = "1.0.5";
+  version = "1.0.13";
 in
 stdenvNoCC.mkDerivation {
   pname = "grok-cli-latest";
@@ -13,7 +13,7 @@ stdenvNoCC.mkDerivation {
 
   src = fetchurl {
     url = "https://x.ai/cli/grok-${version}-macos-aarch64";
-    hash = "sha256-Pfp/BPu1QnqPvq0oZZFUOq7LR4s6CrIixDKeyho7L4Y=";
+    hash = "sha256-hmng/a3O7CW4wVnDVfQn/72CWDUl13S2qxUiGX6oO4A=";
   };
 
   dontUnpack = true;
