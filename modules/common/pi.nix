@@ -9,6 +9,9 @@ let
         source = "npm:pi-web-access";
       }
       {
+        source = "npm:pi-mcp-adapter";
+      }
+      {
         source = "npm:@tmustier/pi-raw-paste";
       }
       {
