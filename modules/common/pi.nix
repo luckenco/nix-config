@@ -1,9 +1,10 @@
 { pkgs, ... }:
 let
+  piAgentsMd = pkgs.writeText "pi-agent-AGENTS.md" (builtins.readFile ./pi/AGENTS.md);
   managedPiSettings = (pkgs.formats.json { }).generate "pi-agent-managed-settings.json" {
     packages = [
       {
-        source = "git:git@github.com:luckenco/pinnacle";
+        source = "git:github.com/luckenco/pinnacle";
       }
       {
         source = "npm:pi-web-access";
@@ -40,6 +41,8 @@ in
           else
             ${pkgs.coreutils}/bin/install -m 0644 "${managedPiSettings}" "$target"
           fi
+
+          install -Dm 0644 "${piAgentsMd}" "${config.home.homeDirectory}/.pi/agent/AGENTS.md"
         '';
       }
     )
