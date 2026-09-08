@@ -60,7 +60,7 @@
     taplo
     ruff
     ty
-    typescript-go
+    typescript
     biome
 
     # System info
