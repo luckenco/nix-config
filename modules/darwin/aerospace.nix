@@ -17,6 +17,21 @@
           launchd.enable = true;
 
           settings = {
+            config-version = 2;
+            # Version 2 no longer infers persistent workspaces from keybindings.
+            persistent-workspaces = [
+              "0"
+              "1"
+              "2"
+              "3"
+              "4"
+              "5"
+              "6"
+              "7"
+              "8"
+              "9"
+            ];
+
             after-startup-command = [ ];
 
             enable-normalization-flatten-containers = true;
