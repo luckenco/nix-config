@@ -135,6 +135,8 @@ The setup is Nix-first, not Nix-only.
 
 Stable CLI tools, development tools, and shared configuration belong in Nix. Homebrew handles GUI apps, vendor tools, and packages that currently work better outside nixpkgs.
 
+Brave, Chrome, and Helium are installed and updated outside Nix.
+
 Zed is installed as a macOS app, while its settings are managed declaratively.
 
 The Neovim configuration lives in the standalone `~/Code/nvim` repository. Home Manager links it into `~/.config/nvim`. `just doctor` verifies that link and the external tools the editor expects.
