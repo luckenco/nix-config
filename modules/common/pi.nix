@@ -1,16 +1,14 @@
 { pkgs, ... }:
 let
   piAgentsMd = pkgs.writeText "pi-agent-AGENTS.md" (builtins.readFile ./pi/AGENTS.md);
-  managedPiSettings = (pkgs.formats.json { }).generate "pi-agent-managed-settings.json" {
+  json = pkgs.formats.json { };
+  managedPiSettings = json.generate "pi-agent-managed-settings.json" {
     packages = [
       {
         source = "git:github.com/luckenco/pinnacle";
       }
       {
         source = "npm:pi-web-access";
-      }
-      {
-        source = "npm:pi-mcp-adapter";
       }
       {
         source = "npm:@tmustier/pi-raw-paste";
@@ -22,6 +20,12 @@ let
         source = "npm:@plannotator/pi-extension";
       }
     ];
+  };
+  managedPiMcp = json.generate "pi-agent-managed-mcp.json" {
+    mcpServers.linear = {
+      url = "https://mcp.linear.app/mcp";
+      exposure = "deferred";
+    };
   };
 in
 {
@@ -42,6 +46,7 @@ in
             ${pkgs.coreutils}/bin/install -m 0644 "${managedPiSettings}" "$target"
           fi
 
+          ${pkgs.coreutils}/bin/install -m 0644 "${managedPiMcp}" "${config.home.homeDirectory}/.pi/agent/mcp.json"
           install -Dm 0644 "${piAgentsMd}" "${config.home.homeDirectory}/.pi/agent/AGENTS.md"
         '';
       }

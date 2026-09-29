@@ -1,6 +1,6 @@
 # PI AGENT CONFIG
 
-Global pi config at `~/.pi`. `settings.json` packages and this file are managed by nix (see `modules/common/pi.nix` in `~/Code/nix-config`) — edit them there, not here.
+Global pi config at `~/.pi`. `settings.json` packages, `mcp.json`, and this file are managed by nix (see `modules/common/pi.nix` in `~/Code/nix-config`) — edit them there, not here.
 
 ## Structure
 
@@ -18,11 +18,11 @@ When adding or editing a skill: use `~/.agents/skills/` unless an installer owns
 
 ## MCP
 
-Servers are configured in the shared config `~/.config/mcp/mcp.json`, bridged by `npm:pi-mcp-adapter`. `agent/mcp-cache.json` and `agent/mcp-onboarding.json` are runtime state.
+Servers are configured in `agent/mcp.json` and handled by Pi's built-in MCP support. Manage authentication with `pi mcp login|logout`; OAuth state lives in `agent/mcp-auth.json`.
 
 ## Runtime state
 
-Never edit or commit: `auth.json`, `models-store.json`, `mcp-cache.json`, `mcp-onboarding.json`, `trust.json`, `sessions/`, `.DS_Store`.
+Never edit or commit: `auth.json`, `models-store.json`, `mcp-auth.json`, `mcp.log*`, `trust.json`, `sessions/`, `.DS_Store`.
 
 ## Conventions
 
