@@ -2,12 +2,13 @@
 let
   systemConfig = config;
   sublimeConfigRoot = "Library/Application Support/Sublime Text";
+  sublimeUserRoot = "${sublimeConfigRoot}/Packages/User";
 in
 {
   home-manager.sharedModules = [
     ({
       home.file = {
-        "${sublimeConfigRoot}/Packages/User/Preferences.sublime-settings".text = builtins.toJSON {
+        "${sublimeUserRoot}/Preferences.sublime-settings".text = builtins.toJSON {
           theme = systemConfig.theme.names.sublime.uiTheme;
           color_scheme = systemConfig.theme.names.sublime.colorScheme;
           theme_font_options = [ "no_italic" ];
@@ -35,15 +36,15 @@ in
           index_files = true;
           ignored_packages = [ ];
         };
-        "${sublimeConfigRoot}/Packages/USGC-EPITAXY-ST.sublime-color-scheme".source =
+        "${sublimeUserRoot}/USGC-EPITAXY-ST.sublime-color-scheme".source =
           ./sublime/USGC-EPITAXY-ST.sublime-color-scheme;
-        "${sublimeConfigRoot}/Packages/USGC-HIGHK-ST.sublime-color-scheme".source =
+        "${sublimeUserRoot}/USGC-HIGHK-ST.sublime-color-scheme".source =
           ./sublime/USGC-HIGHK-ST.sublime-color-scheme;
-        "${sublimeConfigRoot}/Packages/USGC-METALGATE-ST.sublime-color-scheme".source =
+        "${sublimeUserRoot}/USGC-METALGATE-ST.sublime-color-scheme".source =
           ./sublime/USGC-METALGATE-ST.sublime-color-scheme;
-        "${sublimeConfigRoot}/Packages/USGC-POLYIMIDE-ST.sublime-color-scheme".source =
+        "${sublimeUserRoot}/USGC-POLYIMIDE-ST.sublime-color-scheme".source =
           ./sublime/USGC-POLYIMIDE-ST.sublime-color-scheme;
-        "${sublimeConfigRoot}/Packages/USGC-RETICLE-ST.sublime-color-scheme".source =
+        "${sublimeUserRoot}/USGC-RETICLE-ST.sublime-color-scheme".source =
           ./sublime/USGC-RETICLE-ST.sublime-color-scheme;
       };
     })

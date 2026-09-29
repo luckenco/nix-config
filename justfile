@@ -6,7 +6,9 @@ bootstrap host="mbp":
     @if command -v nh >/dev/null 2>&1; then \
       nh darwin switch --accept-flake-config --hostname {{ host }} .; \
     else \
-      nix --accept-flake-config run nix-darwin -- switch --flake .#{{ host }}; \
+      sudo nix --extra-experimental-features 'nix-command flakes' \
+        --accept-flake-config run --inputs-from . nix-darwin -- \
+        switch --flake .#{{ host }}; \
     fi
 
 doctor:
@@ -23,11 +25,27 @@ update-grok:
 
 # Update repository pins without activating anything. Uncommitted pin updates are allowed to keep rolling.
 update:
-    @if [ -n "$(jj diff --summary 'all() ~ file:flake.lock ~ file:pkgs/grok-cli-latest.nix')" ]; then \
-      echo "Refusing to update with changes outside managed pin files:" >&2; \
-      jj status >&2; \
-      exit 1; \
-    fi
+    @changes=""; \
+      if command -v jj >/dev/null 2>&1 && jj root >/dev/null 2>&1; then \
+        if ! changes="$(jj diff --summary 'all() ~ file:flake.lock ~ file:pkgs/grok-cli-latest.nix')"; then \
+          echo "Could not inspect the Jujutsu working copy; refusing to update." >&2; \
+          exit 1; \
+        fi; \
+      elif git rev-parse --show-toplevel >/dev/null 2>&1; then \
+        if ! status="$(git status --short --untracked-files=all)"; then \
+          echo "Could not inspect the Git working tree; refusing to update." >&2; \
+          exit 1; \
+        fi; \
+        changes="$(printf '%s\n' "$status" | grep -Ev '^.. (flake\.lock|pkgs/grok-cli-latest\.nix)$' || true)"; \
+      else \
+        echo "Not in a Jujutsu or Git repository; refusing to update." >&2; \
+        exit 1; \
+      fi; \
+      if [ -n "$changes" ]; then \
+        echo "Refusing to update with changes outside managed pin files:" >&2; \
+        printf '%s\n' "$changes" >&2; \
+        exit 1; \
+      fi
     @ulimit -n unlimited || true; \
       bash scripts/update-grok-cli; \
       nix --accept-flake-config fmt pkgs/grok-cli-latest.nix; \

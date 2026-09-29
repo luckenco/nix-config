@@ -45,6 +45,11 @@ in
     QuitMenuItem = true;
   };
 
+  system.defaults.loginwindow = {
+    GuestEnabled = false;
+    SHOWFULLNAME = true;
+  };
+
   system.defaults.CustomSystemPreferences."com.apple.desktopservices" = {
     DSDontWriteNetworkStores = true;
     DSDontWriteUSBStores = true;
@@ -81,11 +86,6 @@ in
     "com.apple.screensaver" = {
       askForPassword = 1;
       askForPasswordDelay = 0;
-    };
-
-    "com.apple.loginwindow" = {
-      GuestEnabled = false;
-      SHOWFULLNAME = true;
     };
 
     "com.apple.AppleMultitouchTrackpad" = {

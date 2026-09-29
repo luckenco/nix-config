@@ -31,19 +31,18 @@ the `hosts/` directory.
 
 ## Bootstrap
 
-Install Nix and clone the repository, then run:
+Install Nix, clone the repository, enter it, and run:
 
 ```sh
-just bootstrap
+nix --extra-experimental-features 'nix-command flakes' \
+  --accept-flake-config run --inputs-from . nixpkgs#just -- bootstrap
 ```
 
-The host defaults to `mbp`. To pass it explicitly:
+This obtains Just from the repository's locked Nixpkgs input. If `just` is already available, `just bootstrap` is equivalent. The host defaults to `mbp`; pass `mbp` as the final argument to select it explicitly.
 
-```sh
-just bootstrap mbp
-```
+If `nh` is already installed, bootstrap uses it. Otherwise it runs the repository's locked nix-darwin with `sudo`.
 
-If `nh` is installed, bootstrap uses it. Otherwise it falls back to nix-darwin directly.
+Before the first activation, sign in to the Mac App Store so the configured `masApps` can be installed. The Neovim configuration, GPG secret key, TX-02 font, Zed, and browsers are intentionally managed outside this repository; `just doctor` reports missing external dependencies after activation.
 
 ## Daily use
 
@@ -85,7 +84,7 @@ Update the Grok CLI pin and flake inputs without activating anything:
 just update
 ```
 
-The update allows uncommitted changes to `flake.lock` and the Grok CLI pin, but refuses changes to other files.
+The update allows uncommitted changes to `flake.lock` and the Grok CLI pin, but refuses changes to other files. The safety check supports both Jujutsu and ordinary Git clones.
 
 Update Pi extensions and Homebrew packages:
 

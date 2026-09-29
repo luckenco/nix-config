@@ -13,7 +13,8 @@ if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[^[:space:]]+)?$ ]]; then
 fi
 
 current_version="$(sed -n 's/^[[:space:]]*version = "\([^"]*\)";$/\1/p' "$package_file" | head -n 1)"
-if [[ "$current_version" == "$version" ]]; then
+current_hash="$(sed -n 's/^[[:space:]]*hash = "\([^"]*\)";$/\1/p' "$package_file" | head -n 1)"
+if [[ "$current_version" == "$version" && "$current_hash" =~ ^sha256-[A-Za-z0-9+/]+={0,2}$ ]]; then
   echo "Grok CLI already pinned at $version"
   exit 0
 fi
@@ -21,16 +22,34 @@ fi
 prefetch_hash() {
   local platform="$1"
   nix store prefetch-file --json "https://x.ai/cli/grok-${version}-${platform}" |
-    sed -n 's/.*"hash":"\([^"]*\)".*/\1/p'
+    jq -er '.hash | select(type == "string" and startswith("sha256-"))'
 }
 
 export GROK_VERSION="$version"
 GROK_HASH="$(prefetch_hash macos-aarch64)"
+if [[ ! "$GROK_HASH" =~ ^sha256-[A-Za-z0-9+/]+={0,2}$ ]]; then
+  echo "Invalid Grok hash from prefetch: $GROK_HASH" >&2
+  exit 1
+fi
 export GROK_HASH
+
+tmp="$(mktemp "${package_file}.tmp.XXXXXX")"
+trap 'rm -f "$tmp"' EXIT
+cp -p "$package_file" "$tmp"
 
 perl -0pi -e '
   s/version = "[^"]+";/version = "$ENV{GROK_VERSION}";/;
-  s/hash = "[^"]+";/hash = "$ENV{GROK_HASH}";/;
-' "$package_file"
+  s/hash = "[^"]*";/hash = "$ENV{GROK_HASH}";/;
+' "$tmp"
+
+updated_version="$(sed -n 's/^[[:space:]]*version = "\([^"]*\)";$/\1/p' "$tmp" | head -n 1)"
+updated_hash="$(sed -n 's/^[[:space:]]*hash = "\([^"]*\)";$/\1/p' "$tmp" | head -n 1)"
+if [[ "$updated_version" != "$GROK_VERSION" || "$updated_hash" != "$GROK_HASH" ]]; then
+  echo "Could not update Grok version and hash in $package_file" >&2
+  exit 1
+fi
+
+mv "$tmp" "$package_file"
+trap - EXIT
 
 echo "Pinned Grok CLI $version in $package_file"
