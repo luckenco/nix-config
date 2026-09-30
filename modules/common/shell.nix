@@ -5,13 +5,43 @@ in
 {
   home-manager.sharedModules = [
     (
-      { config, ... }:
+      {
+        config,
+        lib,
+        pkgs,
+        ...
+      }:
       let
         hmConfig = config;
       in
       {
         home.file.".npmrc".text = ''
           prefix=${hmConfig.home.homeDirectory}/.local
+        '';
+
+        # Bun owns cf; installation and completion are best-effort conveniences.
+        home.activation.ensureCf = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          export BUN_INSTALL="${hmConfig.xdg.cacheHome}/.bun"
+          bun_bin="$BUN_INSTALL/bin"
+          if [ ! -x "$bun_bin/cf" ]; then
+            run ${pkgs.bun}/bin/bun install --global cf || warnEcho "Failed to install cf; continuing activation."
+          fi
+
+          if [ -x "$bun_bin/cf" ] && [ ! -v DRY_RUN ]; then
+            cf_completion="${hmConfig.xdg.cacheHome}/zsh/cf.zsh"
+            cf_tmp=""
+            if mkdir -p "$(dirname "$cf_completion")" \
+              && cf_tmp="$(mktemp "$cf_completion.XXXXXX")" \
+              && PATH="${pkgs.nodejs}/bin:$PATH" "$bun_bin/cf" complete zsh > "$cf_tmp" \
+              && mv "$cf_tmp" "$cf_completion"; then
+              :
+            else
+              if [ -n "$cf_tmp" ]; then
+                rm -f "$cf_tmp" || true
+              fi
+              warnEcho "Failed to generate cf completion; keeping any existing completion."
+            fi
+          fi
         '';
 
         programs.zsh = {
@@ -31,6 +61,7 @@ in
           };
 
           sessionVariables = {
+            BUN_INSTALL = "${hmConfig.xdg.cacheHome}/.bun";
             LANG = "en_US.UTF-8";
             EDITOR = "nvim";
             VISUAL = "nvim";
@@ -134,8 +165,8 @@ in
               fallback_paths+=("/opt/homebrew/bin" "/opt/homebrew/sbin")
             fi
             fallback_paths+=(
+              "${hmConfig.xdg.cacheHome}/.bun/bin"
               "$HOME/.bun/bin"
-              "$HOME/.cache/.bun/bin"
               "$HOME/.orbstack/bin"
             )
 
@@ -144,6 +175,10 @@ in
             path_append_after_nix_existing "''${fallback_paths[@]}"
 
             export PATH
+
+            if [[ -r "${hmConfig.xdg.cacheHome}/zsh/cf.zsh" ]]; then
+              source "${hmConfig.xdg.cacheHome}/zsh/cf.zsh"
+            fi
 
             # Functions
             ldot() { eza -a | rg "^\." }

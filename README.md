@@ -42,6 +42,8 @@ This obtains Just from the repository's locked Nixpkgs input. If `just` is alrea
 
 If `nh` is already installed, bootstrap uses it. Otherwise it runs the repository's locked nix-darwin with `sudo`.
 
+Home Manager activation attempts to install the Cloudflare CLI (`cf`) through Bun if it is missing. Activation and interactive shells use the same Bun root at `$XDG_CACHE_HOME/.bun` (`~/.cache/.bun` by default). This requires network access on first install; Bun owns the CLI version outside the Nix lock file. Activation also caches its Zsh completion, so shell startup does not run the CLI. Installation or completion failures warn without aborting activation; failed generation preserves any existing completion. Completion refreshes on the next activation after a Bun update.
+
 Before the first activation, sign in to the Mac App Store so the configured `masApps` can be installed. The Neovim configuration, GPG secret key, TX-02 font, Zed, and browsers are intentionally managed outside this repository; `just doctor` reports missing external dependencies after activation.
 
 ## Daily use
