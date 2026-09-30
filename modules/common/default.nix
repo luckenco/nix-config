@@ -6,6 +6,7 @@
     ./home-manager.nix
     ./jujutsu.nix
     ./nix.nix
+    ./origin.nix
     ./packages.nix
     ./pi.nix
     ./shell.nix
