@@ -3,6 +3,7 @@ let
   piAgentsMd = pkgs.writeText "pi-agent-AGENTS.md" (builtins.readFile ./pi/AGENTS.md);
   json = pkgs.formats.json { };
   managedPiSettings = json.generate "pi-agent-managed-settings.json" {
+    defaultTools = [ "+codemode" ];
     packages = [
       {
         source = "git:github.com/luckenco/pinnacle";
