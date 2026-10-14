@@ -23,9 +23,22 @@ let
     ];
   };
   managedPiMcp = json.generate "pi-agent-managed-mcp.json" {
-    mcpServers.linear = {
-      url = "https://mcp.linear.app/mcp";
-      exposure = "deferred";
+    mcpServers = {
+      linear = {
+        url = "https://mcp.linear.app/mcp";
+        exposure = "deferred";
+      };
+      chrome-devtools = {
+        command = "${pkgs.bun}/bin/bunx";
+        args = [
+          "chrome-devtools-mcp@latest"
+          "--no-usage-statistics"
+          "--no-performance-crux"
+          "--redact-network-headers"
+        ];
+        exposure = "deferred";
+        description = "Debug Chrome pages, JavaScript, network requests, and browser performance.";
+      };
     };
   };
 in
