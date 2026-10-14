@@ -23,11 +23,14 @@ lint:
 update-grok:
     @bash scripts/update-grok-cli
 
+update-omp:
+    @bash scripts/update-omp
+
 # Update repository pins without activating anything. Uncommitted pin updates are allowed to keep rolling.
 update:
     @changes=""; \
       if command -v jj >/dev/null 2>&1 && jj root >/dev/null 2>&1; then \
-        if ! changes="$(jj diff --summary 'all() ~ file:flake.lock ~ file:pkgs/grok-cli-latest.nix')"; then \
+        if ! changes="$(jj diff --summary 'all() ~ file:flake.lock ~ file:pkgs/grok-cli-latest.nix ~ file:pkgs/omp-latest.nix')"; then \
           echo "Could not inspect the Jujutsu working copy; refusing to update." >&2; \
           exit 1; \
         fi; \
@@ -36,7 +39,7 @@ update:
           echo "Could not inspect the Git working tree; refusing to update." >&2; \
           exit 1; \
         fi; \
-        changes="$(printf '%s\n' "$status" | grep -Ev '^.. (flake\.lock|pkgs/grok-cli-latest\.nix)$' || true)"; \
+        changes="$(printf '%s\n' "$status" | grep -Ev '^.. (flake\.lock|pkgs/grok-cli-latest\.nix|pkgs/omp-latest\.nix)$' || true)"; \
       else \
         echo "Not in a Jujutsu or Git repository; refusing to update." >&2; \
         exit 1; \
@@ -47,7 +50,8 @@ update:
         exit 1; \
       fi
     @bash scripts/update-grok-cli; \
-      nix --accept-flake-config fmt pkgs/grok-cli-latest.nix; \
+      bash scripts/update-omp; \
+      nix --accept-flake-config fmt pkgs/grok-cli-latest.nix pkgs/omp-latest.nix; \
       nix flake update --accept-flake-config --flake .
 
 # Validate the flake and build the host without activating it.

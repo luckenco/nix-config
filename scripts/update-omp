@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$repo_root"
+
+package_file="pkgs/omp-latest.nix"
+metadata="$(curl -fsSL 'https://build.stencil.so/api/products/omp/latest/macos-arm64?channel=stable')"
+version="$(jq -er '.build.version' <<<"$metadata")"
+build_id="$(jq -er '.build.id' <<<"$metadata")"
+sha256="$(jq -er '.file.sha256' <<<"$metadata")"
+
+if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ||
+  ! "$build_id" =~ ^[A-Za-z0-9_-]+$ ||
+  ! "$sha256" =~ ^[0-9a-f]{64}$ ]]; then
+  echo "Invalid OMP stable build metadata" >&2
+  exit 1
+fi
+
+# Use the permanent build URL, not the API's expiring signed download URL.
+url="https://build.stencil.so/d/omp/${build_id}/omp-darwin-arm64"
+if [[ "$(jq -er '.file.url' <<<"$metadata")" != "/d/omp/${build_id}/omp-darwin-arm64" ]]; then
+  echo "Unexpected OMP artifact URL" >&2
+  exit 1
+fi
+
+export OMP_VERSION="$version" OMP_BUILD_ID="$build_id"
+OMP_HASH="$(nix hash convert --hash-algo sha256 --to sri "$sha256")"
+export OMP_HASH
+
+tmp="$(mktemp "${package_file}.tmp.XXXXXX")"
+trap 'rm -f "$tmp"' EXIT
+cp -p "$package_file" "$tmp"
+
+perl -0pi -e '
+  s/version = "[^"]+";/version = "$ENV{OMP_VERSION}";/ or die "Missing version pin\n";
+  s/buildId = "[^"]+";/buildId = "$ENV{OMP_BUILD_ID}";/ or die "Missing build pin\n";
+  s/hash = "[^"]*";/hash = "$ENV{OMP_HASH}";/ or die "Missing hash pin\n";
+' "$tmp"
+
+if cmp -s "$package_file" "$tmp"; then
+  echo "OMP already pinned at $version ($build_id)"
+  exit 0
+fi
+
+# Verify the published checksum before replacing any pins.
+nix store prefetch-file --json --expected-hash "$OMP_HASH" "$url" >/dev/null
+mv "$tmp" "$package_file"
+trap - EXIT
+
+echo "Pinned OMP $version ($build_id) in $package_file"

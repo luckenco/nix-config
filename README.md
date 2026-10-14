@@ -80,13 +80,15 @@ just doctor
 
 ## Updating
 
-Update the Grok CLI pin and flake inputs without activating anything:
+Update the Grok CLI and OMP pins to their latest stable releases, and update flake inputs without activating anything:
 
 ```sh
 just update
 ```
 
-The update allows uncommitted changes to `flake.lock` and the Grok CLI pin, but refuses changes to other files. The safety check supports both Jujutsu and ordinary Git clones.
+The update allows uncommitted changes to `flake.lock`, `pkgs/grok-cli-latest.nix`, and `pkgs/omp-latest.nix`, but refuses changes to other files. The safety check supports both Jujutsu and ordinary Git clones.
+
+`just update-omp` refreshes only the OMP pin. OMP uses a prebuilt Apple Silicon binary pinned by build ID and SHA-256; normal rebuilds keep that version until the pin is updated.
 
 Update Pi extensions and Homebrew packages:
 
