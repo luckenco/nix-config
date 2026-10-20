@@ -69,7 +69,7 @@
 
     # CLIs
     awscli2
-    azure-cli
+    inputs.nixpkgs-azure-cli.legacyPackages.${pkgs.stdenv.hostPlatform.system}.azure-cli
     cloudflared
     livekit-cli
   ];

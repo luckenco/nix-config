@@ -5,8 +5,8 @@
 }:
 
 let
-  version = "18.11.1";
-  buildId = "20261015-150252-7cc9129";
+  version = "18.12.3";
+  buildId = "20261019-184157-53a0377";
 in
 stdenvNoCC.mkDerivation {
   pname = "omp-latest";
@@ -14,7 +14,7 @@ stdenvNoCC.mkDerivation {
 
   src = fetchurl {
     url = "https://build.stencil.so/d/omp/${buildId}/omp-darwin-arm64";
-    hash = "sha256-vesWJrmdwp2EQUbqeUDTZ+YbEDK3fhx3iAEl83nKLdo=";
+    hash = "sha256-8qZXszIPyvojBVBTlApFsmqNMlThQSoViDgBPWcNbsU=";
   };
 
   dontUnpack = true;

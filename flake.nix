@@ -12,6 +12,9 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
+    # Temporary: newer nixpkgs has a broken Fabric/Invoke dependency for Azure CLI.
+    nixpkgs-azure-cli.url = "github:nixos/nixpkgs/319e4cebef10cbb636c6ea392137b52ad105336a";
+
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
