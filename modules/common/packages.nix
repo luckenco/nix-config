@@ -1,5 +1,11 @@
 { inputs, pkgs, ... }:
 {
+  nixpkgs.overlays = [
+    (final: prev: {
+      bun = final.callPackage ../../pkgs/bun-latest.nix { bun = prev.bun; };
+    })
+  ];
+
   environment.systemPackages = with pkgs; [
     # Core utilities
     ripgrep

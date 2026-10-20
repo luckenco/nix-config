@@ -78,6 +78,21 @@
       formatter.${system} = pkgs.nixfmt-tree;
 
       checks.${system} = {
+        updates =
+          pkgs.runCommand "update-behavior-check"
+            {
+              src = ./.;
+              nativeBuildInputs = with pkgs; [
+                jq
+                perl
+              ];
+            }
+            ''
+              cd "$src"
+              bash scripts/test-updates
+              touch "$out"
+            '';
+
         deadnix =
           pkgs.runCommand "deadnix-check"
             {

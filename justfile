@@ -26,11 +26,14 @@ update-grok:
 update-omp:
     @bash scripts/update-omp
 
+update-bun:
+    @bash scripts/update-bun
+
 # Update repository pins without activating anything. Uncommitted pin updates are allowed to keep rolling.
 update:
     @changes=""; \
       if command -v jj >/dev/null 2>&1 && jj root >/dev/null 2>&1; then \
-        if ! changes="$(jj diff --summary 'all() ~ file:flake.lock ~ file:pkgs/grok-cli-latest.nix ~ file:pkgs/omp-latest.nix')"; then \
+        if ! changes="$(jj diff --summary 'all() ~ file:flake.lock ~ file:pkgs/grok-cli-latest.nix ~ file:pkgs/omp-latest.nix ~ file:pkgs/bun-latest.nix')"; then \
           echo "Could not inspect the Jujutsu working copy; refusing to update." >&2; \
           exit 1; \
         fi; \
@@ -39,7 +42,7 @@ update:
           echo "Could not inspect the Git working tree; refusing to update." >&2; \
           exit 1; \
         fi; \
-        changes="$(printf '%s\n' "$status" | grep -Ev '^.. (flake\.lock|pkgs/grok-cli-latest\.nix|pkgs/omp-latest\.nix)$' || true)"; \
+        changes="$(printf '%s\n' "$status" | grep -Ev '^.. (flake\.lock|pkgs/grok-cli-latest\.nix|pkgs/omp-latest\.nix|pkgs/bun-latest\.nix)$' || true)"; \
       else \
         echo "Not in a Jujutsu or Git repository; refusing to update." >&2; \
         exit 1; \
@@ -51,7 +54,8 @@ update:
       fi
     @bash scripts/update-grok-cli; \
       bash scripts/update-omp; \
-      nix --accept-flake-config fmt pkgs/grok-cli-latest.nix pkgs/omp-latest.nix; \
+      bash scripts/update-bun; \
+      nix --accept-flake-config fmt pkgs/grok-cli-latest.nix pkgs/omp-latest.nix pkgs/bun-latest.nix; \
       nix flake update --accept-flake-config --flake .
 
 # Validate the flake and build the host without activating it.
@@ -65,16 +69,7 @@ switch host="mbp":
 
 # Update state managed outside Nix.
 update-extras:
-    @if command -v pi >/dev/null 2>&1; then \
-      pi update --extensions; \
-    else \
-      echo "pi not found; skipping Pi extension update"; \
-    fi
-    @if command -v brew >/dev/null 2>&1; then \
-      HOMEBREW_NO_AUTO_UPDATE=1 brew upgrade --yes; \
-    else \
-      echo "brew not found; skipping Homebrew update"; \
-    fi
+    @bash scripts/update-extras
 
 # Preserve the one-shot workflow while keeping every stage independently usable.
 rebuild-update host="mbp":

@@ -1,0 +1,10 @@
+{ bun, fetchurl }:
+
+# Keep nixpkgs' packaging and Darwin fixups, but track upstream releases.
+bun.overrideAttrs (final: {
+  version = "1.4.3";
+  src = fetchurl {
+    url = "https://github.com/oven-sh/bun/releases/download/bun-v${final.version}/bun-darwin-aarch64.zip";
+    hash = "sha256-gK/UwGm0am+o8+xSC+vHUKeEPkqNW5WD0prUNsAKNAM=";
+  };
+})

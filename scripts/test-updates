@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+mkdir -p "$tmp/repo/scripts" "$tmp/repo/pkgs" "$tmp/bin" "$tmp/home" "$tmp/project"
+cp "$repo_root/scripts/update-bun" "$tmp/repo/scripts/"
+cp "$repo_root/pkgs/bun-latest.nix" "$tmp/repo/pkgs/"
+
+# Exercise failure paths without touching the real pins or package managers.
+cat >"$tmp/bin/curl" <<'SH'
+#!/bin/bash
+printf '{"tag_name":"bun-v%s"}\n' "$TEST_VERSION"
+SH
+cat >"$tmp/bin/nix" <<'SH'
+#!/bin/bash
+exit 1
+SH
+chmod +x "$tmp/bin/"*
+export TEST_VERSION=invalid
+if PATH="$tmp/bin:$PATH" bash "$tmp/repo/scripts/update-bun"; then
+  echo "Invalid versions must fail" >&2
+  exit 1
+fi
+cmp "$repo_root/pkgs/bun-latest.nix" "$tmp/repo/pkgs/bun-latest.nix"
+export TEST_VERSION=999.0.0
+if PATH="$tmp/bin:$PATH" bash "$tmp/repo/scripts/update-bun"; then
+  echo "Download failures must fail" >&2
+  exit 1
+fi
+cmp "$repo_root/pkgs/bun-latest.nix" "$tmp/repo/pkgs/bun-latest.nix"
+
+cat >"$tmp/bin/nix" <<'SH'
+#!/bin/bash
+printf '%s\n' '{"hash":"sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="}'
+SH
+PATH="$tmp/bin:$PATH" bash "$tmp/repo/scripts/update-bun"
+grep -F 'version = "999.0.0";' "$tmp/repo/pkgs/bun-latest.nix"
+grep -F 'hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";' "$tmp/repo/pkgs/bun-latest.nix"
+
+cat >"$tmp/bin/updater" <<'SH'
+#!/bin/bash
+name="${0##*/}"
+printf '%s|%s|%s|%s\n' "$name" "$*" "$PWD" "$BUN_INSTALL" >>"$TEST_LOG"
+if [[ "$name" == bun && "$TEST_FAIL" == 1 ]]; then
+  exit 1
+fi
+SH
+chmod +x "$tmp/bin/updater"
+for command in bun npm uv rustup origin amp sentry pi mas brew; do
+  ln -s updater "$tmp/bin/$command"
+done
+export TEST_LOG="$tmp/log" TEST_FAIL=1
+cd "$tmp/project"
+if HOME="$tmp/home" BUN_INSTALL="$tmp/globals" PATH="$tmp/bin" \
+  /bin/bash "$repo_root/scripts/update-extras"; then
+  echo "An updater failure must fail the stage" >&2
+  exit 1
+fi
+# Failure must not stop later tools; all commands use HOME and the configured Bun root.
+[[ "$(wc -l <"$TEST_LOG" | tr -d '[:space:]')" == 10 ]]
+awk -F '|' -v home="$tmp/home" -v bun="$tmp/globals" \
+  '$3 != home || $4 != bun { exit 1 }' "$TEST_LOG"
+[[ "$(head -n 1 "$TEST_LOG")" == "bun|update --global --latest|"* ]]
+[[ "$(tail -n 1 "$TEST_LOG")" == "brew|upgrade --yes|"* ]]
+
+export TEST_FAIL=0
+rm "$tmp/bin/origin"
+HOME="$tmp/home" BUN_INSTALL="" XDG_CACHE_HOME="$tmp/cache" PATH="$tmp/bin" \
+  /bin/bash "$repo_root/scripts/update-extras"
+[[ "$(tail -n 1 "$TEST_LOG")" == *"|$tmp/cache/.bun" ]]
+echo "Update behavior checks passed"

@@ -42,7 +42,7 @@ This obtains Just from the repository's locked Nixpkgs input. If `just` is alrea
 
 If `nh` is already installed, bootstrap uses it. Otherwise it runs the repository's locked nix-darwin with `sudo`.
 
-Home Manager activation attempts to install the Cloudflare CLI (`cf`) through Bun if it is missing. Activation and interactive shells use the same Bun root at `$XDG_CACHE_HOME/.bun` (`~/.cache/.bun` by default). This requires network access on first install; Bun owns the CLI version outside the Nix lock file. Activation also caches its Zsh completion, so shell startup does not run the CLI. Installation or completion failures warn without aborting activation; failed generation preserves any existing completion. Completion refreshes on the next activation after a Bun update.
+Home Manager activation attempts to install the Cloudflare CLI (`cf`) through Bun if it is missing. Activation and interactive shells use the same Bun root at `$XDG_CACHE_HOME/.bun` (`~/.cache/.bun` by default). This requires network access on first install; Bun owns the CLI version outside the Nix lock file. Activation also caches its Zsh completion, so shell startup does not run the CLI. Installation or completion failures warn without aborting activation; failed generation preserves any existing completion. Completion refreshes on activation. After updating `cf` through `just update-extras`, run `just switch` to refresh its cached completion.
 
 Before the first activation, sign in to the Mac App Store so the configured `masApps` can be installed. The Neovim configuration, GPG secret key, TX-02 font, Zed, and browsers are intentionally managed outside this repository; `just doctor` reports missing external dependencies after activation.
 
@@ -80,21 +80,25 @@ just doctor
 
 ## Updating
 
-Update the Grok CLI and OMP pins to their latest stable releases, and update flake inputs without activating anything:
+Update the Bun, Grok CLI, and OMP pins to their latest stable releases, and update flake inputs without activating anything:
 
 ```sh
 just update
 ```
 
-The update allows uncommitted changes to `flake.lock`, `pkgs/grok-cli-latest.nix`, and `pkgs/omp-latest.nix`, but refuses changes to other files. The safety check supports both Jujutsu and ordinary Git clones.
+The update allows uncommitted changes to `flake.lock`, `pkgs/bun-latest.nix`, `pkgs/grok-cli-latest.nix`, and `pkgs/omp-latest.nix`, but refuses changes to other files. The safety check supports both Jujutsu and ordinary Git clones.
 
-`just update-omp` refreshes only the OMP pin. OMP uses a prebuilt Apple Silicon binary pinned by build ID and SHA-256; normal rebuilds keep that version until the pin is updated.
+`just update-bun`, `just update-grok`, and `just update-omp` refresh individual pins. Bun uses an upstream Apple Silicon release with nixpkgs' packaging and Darwin fixups, so it can update even when nixpkgs lags. OMP uses a prebuilt Apple Silicon binary pinned by build ID and SHA-256. Normal rebuilds keep these versions until the pins are updated.
 
-Update Pi extensions and Homebrew packages:
+Update tools managed outside Nix:
 
 ```sh
 just update-extras
 ```
+
+This updates Bun global packages to latest releases (including Pi and `cf`), npm globals, uv tools, Rust toolchains, Origin, Amp, Sentry CLI, Pi extensions, Mac App Store apps, and Homebrew packages. Missing commands are skipped. Failures are reported without preventing the other extras from being attempted; the stage exits unsuccessfully if any updater fails. Updates run from `$HOME`, never from the caller's project.
+
+This does not update source checkouts, Cargo-installed binaries, arbitrary downloaded executables, or independently installed GUI apps such as Zed and browsers. Those retain their own update workflows. Other Nix packages still follow nixpkgs; only Bun, Grok, and OMP have upstream release pins.
 
 Run the full update workflow:
 
@@ -107,7 +111,7 @@ This runs four stages in order:
 1. Update repository pins.
 2. Check the flake and build the host.
 3. Activate the configuration.
-4. Update Pi extensions and Homebrew packages.
+4. Update external CLI packages, extensions, toolchains, and apps.
 
 Each stage is available separately, so a failed update does not force the whole workflow to be repeated.
 
