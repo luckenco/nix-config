@@ -32,7 +32,7 @@ in
             cf_tmp=""
             if mkdir -p "$(dirname "$cf_completion")" \
               && cf_tmp="$(mktemp "$cf_completion.XXXXXX")" \
-              && PATH="${pkgs.nodejs}/bin:$PATH" "$bun_bin/cf" complete zsh > "$cf_tmp" \
+              && PATH="${pkgs.nodejs-security}/bin:$PATH" "$bun_bin/cf" complete zsh > "$cf_tmp" \
               && mv "$cf_tmp" "$cf_completion"; then
               :
             else

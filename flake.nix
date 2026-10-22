@@ -78,6 +78,41 @@
       formatter.${system} = pkgs.nixfmt-tree;
 
       checks.${system} = {
+        nodejs =
+          let
+            nodejs = inputs.self.darwinConfigurations.mbp.pkgs.nodejs-security;
+          in
+          assert pkgs.lib.versionAtLeast nodejs.version "24.22.1";
+          pkgs.runCommand "nodejs-runtime-check"
+            {
+              nativeBuildInputs = [
+                pkgs.stdenv.cc
+                nodejs.python
+              ];
+            }
+            ''
+              export HOME="$TMPDIR"
+              test "$(${nodejs}/bin/node --version)" = "v${nodejs.version}"
+              test -f ${nodejs}/include/node/node_api.h
+              # npm and Corepack must find the patched runtime without relying on PATH.
+              PATH= ${nodejs}/bin/npm --version
+              PATH= ${nodejs}/bin/npx --version
+              PATH= ${nodejs}/bin/corepack --version
+
+              # Build an addon offline with an empty header cache and no host Xcode.
+              cat > binding.gyp <<'EOF'
+              {"targets": [{"target_name": "addon", "sources": ["addon.c"]}]}
+              EOF
+              cat > addon.c <<'EOF'
+              #include <node_api.h>
+              napi_value init(napi_env env, napi_value exports) { return exports; }
+              NAPI_MODULE(NODE_GYP_MODULE_NAME, init)
+              EOF
+              ${nodejs}/bin/node ${nodejs}/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js rebuild
+              ${nodejs}/bin/node -e 'require("./build/Release/addon.node")'
+              touch "$out"
+            '';
+
         updates =
           pkgs.runCommand "update-behavior-check"
             {

@@ -98,7 +98,7 @@ just update-extras
 
 This updates Bun global packages to latest releases (including Pi and `cf`), npm globals, uv tools, Rust toolchains, Origin, Prime Agent, Amp, Sentry CLI, Pi extensions, Mac App Store apps, and Homebrew packages. Missing commands are skipped. Failures are reported without preventing the other extras from being attempted; the stage exits unsuccessfully if any updater fails. Updates run from `$HOME`, never from the caller's project.
 
-This does not update source checkouts, Cargo-installed binaries, arbitrary downloaded executables, or independently installed GUI apps such as Zed and browsers. Those retain their own update workflows. Other Nix packages still follow nixpkgs; only Bun, Grok, and OMP have upstream release pins.
+This does not update source checkouts, Cargo-installed binaries, arbitrary downloaded executables, or independently installed GUI apps such as Zed and browsers. Those retain their own update workflows. Other Nix packages normally follow nixpkgs. Node 24 temporarily uses the official, hash-pinned Apple Silicon 24.22.1 security release, including its bundled libraries. The system Node runtime, Cloudflare CLI completion, and Twilio use this package without rebuilding unrelated tools. It automatically defers to nixpkgs once its Node 24 package reaches 24.22.1 or newer. Bun, Grok, and OMP have independently updated upstream release pins.
 
 Run the full update workflow:
 

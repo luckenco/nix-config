@@ -3,6 +3,16 @@
   nixpkgs.overlays = [
     (final: prev: {
       bun = final.callPackage ../../pkgs/bun-latest.nix { bun = prev.bun; };
+      # Stop overriding automatically once nixpkgs has the security release.
+      nodejs-security =
+        if prev.lib.versionOlder prev.nodejs_24.version "24.22.1" then
+          prev.nodejs_24.override {
+            nodejs-slim = final.callPackage ../../pkgs/nodejs-24-security.nix {
+              nodejs-slim = prev.nodejs-slim_24;
+            };
+          }
+        else
+          prev.nodejs_24;
     })
   ];
 
@@ -47,7 +57,7 @@
     tealdeer
 
     # Languages & runtimes
-    nodejs
+    nodejs-security
     bun
     uv
     rustup
