@@ -4,7 +4,7 @@ set -euo pipefail
 # Never let package managers resolve an .npmrc or package.json from the caller's project.
 cd "$HOME"
 export BUN_INSTALL="${BUN_INSTALL:-${XDG_CACHE_HOME:-$HOME/.cache}/.bun}"
-failed=0
+failed=()
 
 update() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -19,7 +19,7 @@ update() {
     return
   fi
   echo "Update failed: $*" >&2
-  failed=1
+  failed+=("$*")
 }
 
 # Update CLI packages before their extensions.
@@ -28,6 +28,7 @@ update npm update --global
 update uv tool upgrade --all
 update rustup update
 update origin update
+update prime-agent update
 update amp update
 update sentry cli upgrade
 update pi update --extensions
@@ -37,4 +38,8 @@ update mas upgrade
 export HOMEBREW_NO_AUTO_UPDATE=1
 update brew upgrade --yes
 
-exit "$failed"
+if ((${#failed[@]})); then
+  printf '\nFailed updates:\n' >&2
+  printf '  %s\n' "${failed[@]}" >&2
+  exit 1
+fi
