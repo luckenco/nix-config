@@ -22,8 +22,8 @@ in
     # Faster UI feedback
     NSWindowResizeTime = 0.001;
 
-    # Natural scrolling off
-    "com.apple.swipescrolldirection" = false;
+    # Natural scrolling on
+    "com.apple.swipescrolldirection" = true;
   };
 
   system.defaults.dock = {
