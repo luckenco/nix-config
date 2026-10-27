@@ -115,6 +115,23 @@ This runs four stages in order:
 
 Each stage is available separately, so a failed update does not force the whole workflow to be repeated.
 
+## Nix storage maintenance
+
+Determinate Nix owns automatic store garbage collection. A separate root launchd job,
+`org.nixos.nix-prune-generations`, prunes only the system profile every Sunday at
+12:00 local time. It keeps all generations from the last 30 days and at least the
+latest 10. It does not collect store garbage or prune project/direnv roots.
+
+Preview the retention policy without changing anything:
+
+```sh
+nh clean profile /nix/var/nix/profiles/system --dry --keep 10 --keep-since 30d --no-gc --no-gcroots --no-direnv
+```
+
+The job is installed by `just switch`; activation does not immediately prune anything.
+Logs go to `/var/log/nix-prune-generations.log`. Pruned generations are no longer
+available for rollback. Determinate can reclaim their unreferenced dependencies later.
+
 ## What is managed
 
 ### Nix and Home Manager
