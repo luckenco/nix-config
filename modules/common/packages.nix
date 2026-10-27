@@ -51,7 +51,6 @@
     (pkgs.callPackage ../../pkgs/grok-cli-latest.nix { })
     (pkgs.callPackage ../../pkgs/omp-latest.nix { })
     python3Packages.huggingface-hub
-    inputs.herdr.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     # Documentation
     tealdeer
