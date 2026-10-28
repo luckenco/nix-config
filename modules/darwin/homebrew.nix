@@ -22,6 +22,7 @@
     # releases, while modules/darwin/zed.nix manages its settings.
     casks = [
       "anki"
+      "blockblock"
       "codex" # Coding agent - cask, not brew
       "figma"
       "gcloud-cli"
@@ -29,11 +30,13 @@
       "keyboardcleantool"
       "linear"
       "microsoft-teams"
+      "oversight"
       "protonvpn"
       "raycast"
       "spotify"
       "sublime-text"
       "telegram"
+      "whatsyoursign" # Stages a manual installer; see README for setup.
       "zotero"
     ];
 

@@ -46,6 +46,16 @@ Home Manager activation attempts to install the Cloudflare CLI (`cf`) through Bu
 
 Before the first activation, sign in to the Mac App Store so the configured `masApps` can be installed. The Neovim configuration, GPG secret key, TX-02 font, Zed, and browsers are intentionally managed outside this repository; `just doctor` reports missing external dependencies after activation.
 
+### Objective-See apps
+
+Homebrew manages OverSight, BlockBlock, and What's Your Sign. After the first `just switch`:
+
+- Allow OverSight notifications and set its notification style to **Alerts**.
+- Grant BlockBlock **Full Disk Access** in System Settings. Paste Protection also requires Accessibility permission for its helper if enabled.
+- What's Your Sign's cask only stages its installer. Run the `open` command printed by Homebrew and complete the GUI installation. If the **Code Signing Info** Finder menu item is missing, enable or toggle WhatsYourSign in System Settings → Login Items & Extensions. Repeat the GUI installation after cask upgrades as needed.
+
+These permissions and the What's Your Sign GUI installation remain manual; a successful rebuild alone does not mean setup is complete.
+
 ## Daily use
 
 Check the flake and build the configuration without activating it:
