@@ -123,6 +123,24 @@
               touch "$out"
             '';
 
+        pi-settings =
+          let
+            config = inputs.self.darwinConfigurations.mbp.config;
+            hm = config.home-manager.users.${config.system.primaryUser};
+          in
+          pkgs.runCommand "pi-settings-check"
+            {
+              nativeBuildInputs = [ pkgs.jq ];
+              ACTIVATE_PI = pkgs.writeShellScript "activate-pi-settings" (
+                builtins.replaceStrings [ hm.home.homeDirectory ] [ "$HOME" ]
+                  hm.home.activation.writePiPackageSettings.data
+              );
+            }
+            ''
+              bash ${./scripts/test-pi-settings}
+              touch "$out"
+            '';
+
         deadnix =
           pkgs.runCommand "deadnix-check"
             {

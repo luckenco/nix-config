@@ -4,11 +4,11 @@ bootstrap host="mbp":
     @echo "Bootstrapping nix-darwin..."
     @command -v nix >/dev/null 2>&1 || { echo "Missing nix. Install Nix first."; exit 1; }
     @if command -v nh >/dev/null 2>&1; then \
-      nh darwin switch --accept-flake-config --hostname {{ host }} .; \
+      nh darwin switch --accept-flake-config --hostname {{ quote(host) }} .; \
     else \
       sudo nix --extra-experimental-features 'nix-command flakes' \
         --accept-flake-config run --inputs-from . nix-darwin -- \
-        switch --flake .#{{ host }}; \
+        switch --flake .#{{ quote(host) }}; \
     fi
 
 doctor:
@@ -61,11 +61,11 @@ update:
 # Validate the flake and build the host without activating it.
 check host="mbp":
     @nix --accept-flake-config flake check; \
-      nh darwin build --accept-flake-config --hostname {{ host }} .
+      nh darwin build --accept-flake-config --hostname {{ quote(host) }} .
 
 # Activate an already-validated configuration.
 switch host="mbp":
-    @nh darwin switch --accept-flake-config --hostname {{ host }} .
+    @nh darwin switch --accept-flake-config --hostname {{ quote(host) }} .
 
 # Update state managed outside Nix.
 update-extras:
@@ -74,6 +74,6 @@ update-extras:
 # Preserve the one-shot workflow while keeping every stage independently usable.
 rebuild-update host="mbp":
     @just --justfile "{{ justfile_directory() }}/justfile" --working-directory "{{ justfile_directory() }}" update
-    @just --justfile "{{ justfile_directory() }}/justfile" --working-directory "{{ justfile_directory() }}" check {{ host }}
-    @just --justfile "{{ justfile_directory() }}/justfile" --working-directory "{{ justfile_directory() }}" switch {{ host }}
+    @just --justfile "{{ justfile_directory() }}/justfile" --working-directory "{{ justfile_directory() }}" check {{ quote(host) }}
+    @just --justfile "{{ justfile_directory() }}/justfile" --working-directory "{{ justfile_directory() }}" switch {{ quote(host) }}
     @just --justfile "{{ justfile_directory() }}/justfile" --working-directory "{{ justfile_directory() }}" update-extras

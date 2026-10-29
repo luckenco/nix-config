@@ -39,6 +39,41 @@ PATH="$tmp/bin:$PATH" bash "$tmp/repo/scripts/update-bun"
 grep -F 'version = "999.0.0";' "$tmp/repo/pkgs/bun-latest.nix"
 grep -F 'hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";' "$tmp/repo/pkgs/bun-latest.nix"
 
+# Grok metadata must remain literal Nix string data and fail before prefetch.
+cp "$repo_root/scripts/update-grok-cli" "$tmp/repo/scripts/"
+cp "$repo_root/pkgs/grok-cli-latest.nix" "$tmp/repo/pkgs/"
+cat >"$tmp/bin/curl" <<'SH'
+#!/bin/bash
+printf '%s\n' "$TEST_VERSION"
+SH
+cat >"$tmp/bin/nix" <<'SH'
+#!/bin/bash
+printf 'prefetch\n' >>"$TEST_PREFETCH"
+printf '%s\n' '{"hash":"sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="}'
+SH
+export TEST_PREFETCH="$tmp/prefetch"
+while IFS= read -r TEST_VERSION; do
+  export TEST_VERSION
+  if PATH="$tmp/bin:$PATH" bash "$tmp/repo/scripts/update-grok-cli"; then
+    echo "Unsafe Grok versions must fail" >&2
+    exit 1
+  fi
+  [[ ! -e "$TEST_PREFETCH" ]]
+  cmp "$repo_root/pkgs/grok-cli-latest.nix" "$tmp/repo/pkgs/grok-cli-latest.nix"
+done <<'VERSIONS'
+999.0.0-${1}
+999.0.0-"
+999.0.0-\
+999.0.0-../bad
+999.0.0-bad?query
+VERSIONS
+for TEST_VERSION in 999.0.0 999.0.1-rc.1; do
+  export TEST_VERSION
+  PATH="$tmp/bin:$PATH" bash "$tmp/repo/scripts/update-grok-cli"
+  grep -F "version = \"$TEST_VERSION\";" "$tmp/repo/pkgs/grok-cli-latest.nix"
+done
+[[ "$(wc -l <"$TEST_PREFETCH" | tr -d '[:space:]')" == 2 ]]
+
 cat >"$tmp/bin/updater" <<'SH'
 #!/bin/bash
 name="${0##*/}"

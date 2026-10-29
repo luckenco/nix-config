@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ACTIVATE_PI is the rendered activation hook with its home redirected by the flake check.
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
+export HOME="$tmp/home"
+unset DRY_RUN
+settings="$HOME/.pi/agent/settings.json"
+
+DRY_RUN=1 "$ACTIVATE_PI"
+[[ ! -e "$HOME" ]]
+"$ACTIVATE_PI"
+jq -e '.packages | length > 0' "$settings"
+[[ -f "$HOME/.pi/agent/mcp.json" && -f "$HOME/.pi/agent/AGENTS.md" ]]
+
+# Preserve user preferences while managed keys win.
+printf '%s\n' '{"theme":"local","packages":[]}' >"$settings"
+"$ACTIVATE_PI"
+jq -e '.theme == "local" and (.packages | length > 0)' "$settings"
+
+# Replacement must replace a symlink rather than modify its referent.
+printf '%s\n' '{"theme":"linked","packages":[]}' >"$tmp/original"
+cp "$tmp/original" "$tmp/before"
+ln -sf "$tmp/original" "$settings"
+"$ACTIVATE_PI"
+[[ ! -L "$settings" ]]
+cmp "$tmp/before" "$tmp/original"
+jq -e '.theme == "linked" and (.packages | length > 0)' "$settings"
+
+# Failed parsing must preserve the old file and remove the temporary merge file.
+printf '{' >"$settings"
+cp "$settings" "$tmp/before"
+if "$ACTIVATE_PI"; then
+  echo "Invalid settings must fail activation" >&2
+  exit 1
+fi
+cmp "$tmp/before" "$settings"
+if compgen -G "$settings.*"; then
+  echo "Activation left temporary settings files" >&2
+  exit 1
+fi
+DRY_RUN=1 "$ACTIVATE_PI"
+cmp "$tmp/before" "$settings"
+echo "Pi settings checks passed"

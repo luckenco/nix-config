@@ -48,20 +48,28 @@ in
       { config, lib, ... }:
       {
         home.activation.writePiPackageSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          target="${config.home.homeDirectory}/.pi/agent/settings.json"
-          mkdir -p "$(dirname "$target")"
+          (
+            set -e
+            if [ -v DRY_RUN ]; then
+              exit 0
+            fi
 
-          if [ -f "$target" ]; then
-            tmp="$(${pkgs.coreutils}/bin/mktemp)"
-            ${pkgs.jq}/bin/jq -s '.[0] * .[1]' "$target" "${managedPiSettings}" > "$tmp"
-            ${pkgs.coreutils}/bin/install -m 0644 "$tmp" "$target"
-            rm -f "$tmp"
-          else
-            ${pkgs.coreutils}/bin/install -m 0644 "${managedPiSettings}" "$target"
-          fi
+            target="${config.home.homeDirectory}/.pi/agent/settings.json"
+            mkdir -p "$(dirname "$target")"
+            tmp="$(${pkgs.coreutils}/bin/mktemp "$target.XXXXXX")"
+            trap 'rm -f "$tmp"' EXIT
 
-          ${pkgs.coreutils}/bin/install -m 0644 "${managedPiMcp}" "${config.home.homeDirectory}/.pi/agent/mcp.json"
-          install -Dm 0644 "${piAgentsMd}" "${config.home.homeDirectory}/.pi/agent/AGENTS.md"
+            if [ -f "$target" ]; then
+              ${pkgs.jq}/bin/jq -s '.[0] * .[1]' "$target" "${managedPiSettings}" > "$tmp"
+            else
+              ${pkgs.coreutils}/bin/cp "${managedPiSettings}" "$tmp"
+            fi
+            ${pkgs.coreutils}/bin/chmod 0644 "$tmp"
+            ${pkgs.coreutils}/bin/mv -f "$tmp" "$target"
+
+            ${pkgs.coreutils}/bin/install -m 0644 "${managedPiMcp}" "${config.home.homeDirectory}/.pi/agent/mcp.json"
+            install -Dm 0644 "${piAgentsMd}" "${config.home.homeDirectory}/.pi/agent/AGENTS.md"
+          )
         '';
       }
     )

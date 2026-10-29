@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Never let package managers resolve an .npmrc or package.json from the caller's project.
+# Avoid caller-directory config discovery; inherited environment is unchanged.
 cd "$HOME"
 export BUN_INSTALL="${BUN_INSTALL:-${XDG_CACHE_HOME:-$HOME/.cache}/.bun}"
 failed=()

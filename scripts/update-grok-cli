@@ -7,7 +7,7 @@ cd "$repo_root"
 package_file="pkgs/grok-cli-latest.nix"
 version="$(curl -fsSL https://x.ai/cli/stable | tr -d '[:space:]')"
 
-if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[^[:space:]]+)?$ ]]; then
+if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?$ ]]; then
   echo "Invalid Grok version from stable channel: $version" >&2
   exit 1
 fi
