@@ -24,15 +24,13 @@ Run installation commands from `$HOME`, not from a project. These commands insta
 | Pi and Cloudflare CLI | `bun add --global @earendil-works/pi-coding-agent cf` (`cf` is also bootstrapped by activation) |
 | Expo development, when needed | `bun add --global eas-cli @expo/ngrok` |
 | Diff and duplication tools, when needed | `bun add --global hunkdiff jscpd` |
-| Prime infrastructure CLI | `uv tool install prime` |
-| Origin | Activation bootstraps a missing installation; see `modules/common/origin.nix` |
-| Prime Agent (separate from `prime`) | Use the [upstream Rust installer](https://github.com/PrimeIntellect-ai/prime-agent/blob/main/install-rust.sh) |
-| Amp | Follow the [official CLI installation](https://ampcode.com/docs/cli) |
+| Prime infrastructure CLI | Activation installs a missing CLI through `uv tool install prime` |
+| Prime Agent (separate from `prime`) | Activation runs the [upstream Rust installer](https://github.com/PrimeIntellect-ai/prime-agent/blob/main/install-rust.sh) if `~/.local/bin/prime-agent` is missing |
 | Sentry CLI (`sentry`, not `sentry-cli`) | Follow the [official installation](https://cli.sentry.dev/getting-started/) |
 
 No npm global packages were present in the checked inventory. Do not duplicate Nix-owned tools into npm/Bun globals. Reauthenticate external CLIs with their own login workflows. Pi configuration is restored by activation; its package installation/update remains outside Nix (`pi update --extensions`).
 
-`just update-extras` updates installed tools; it does not install missing ones. It also does not update Cargo-installed binaries or source checkouts.
+`just update-extras` updates installed tools; it does not install missing ones. Prime's infrastructure CLI is updated through `uv tool upgrade --all`; the separate Rust Prime Agent is updated through `prime-agent update`. Both are included in `just rebuild-update`. Activation bootstraps missing installations, leaves existing executables alone, and warns on failure. Retry a failed installation with `just switch`. It also does not update Cargo-installed binaries or source checkouts.
 
 ## Rust
 

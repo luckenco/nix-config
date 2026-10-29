@@ -124,6 +124,22 @@
               touch "$out"
             '';
 
+        prime =
+          let
+            config = inputs.self.darwinConfigurations.mbp.config;
+            hm = config.home-manager.users.${config.system.primaryUser};
+          in
+          pkgs.runCommand "prime-bootstrap-check"
+            {
+              src = ./.;
+              ACTIVATE_PRIME = pkgs.writeShellScript "activate-prime" hm.home.activation.ensurePrime.data;
+            }
+            ''
+              cd "$src"
+              bash scripts/test-prime
+              touch "$out"
+            '';
+
         pi-settings =
           let
             config = inputs.self.darwinConfigurations.mbp.config;

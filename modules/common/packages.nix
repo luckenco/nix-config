@@ -48,7 +48,6 @@
     jnv
 
     # AI/LLM
-    (pkgs.callPackage ../../pkgs/grok-cli-latest.nix { })
     (pkgs.callPackage ../../pkgs/omp-latest.nix { })
     python3Packages.huggingface-hub
 

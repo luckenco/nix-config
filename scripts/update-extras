@@ -28,9 +28,7 @@ update bun update --global --latest
 update npm update --global
 update uv tool upgrade --all
 update rustup update
-update origin update
 update prime-agent update
-update amp update
 update sentry cli upgrade
 update pi update --extensions
 update mas upgrade

@@ -47,15 +47,6 @@
           user.name = "Constantin Luckenbach";
           user.email = "cluckenbach@protonmail.com";
 
-          credential."https://origin.cursor.com/git".helper = [
-            ""
-            "!/Users/${config.system.primaryUser}/.local/bin/origin credential-helper"
-          ];
-          credential."https://origin.cursor.com".helper = [
-            ""
-            "!/Users/${config.system.primaryUser}/.local/bin/origin credential-helper"
-          ];
-
           init.defaultBranch = "main";
           push.autoSetupRemote = true;
           pull.rebase = true;

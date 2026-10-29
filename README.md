@@ -44,6 +44,8 @@ If `nh` is already installed, bootstrap uses it. Otherwise it runs the repositor
 
 Home Manager activation attempts to install the Cloudflare CLI (`cf`) through Bun if it is missing. Activation and interactive shells use the same persistent Bun root at `$XDG_DATA_HOME/bun` (`~/.local/share/bun` by default), with downloads cached separately at `$XDG_CACHE_HOME/bun`. This requires network access on first install; Bun owns the CLI version outside the Nix lock file. Activation also caches its Zsh completion, so shell startup does not run the CLI. Installation or completion failures warn without aborting activation; failed generation preserves any existing completion. Completion refreshes on activation. After updating `cf` through `just update-extras`, run `just switch` to refresh its cached completion.
 
+Activation also bootstraps the Prime infrastructure CLI through uv and the separate Rust Prime Agent through its upstream installer. Both install under `~/.local`; existing executables are left alone. These are network-dependent, unpinned installations, not Nix store packages. Failures warn without aborting activation; retry with `just switch`. `just update-extras` updates both tools after installation.
+
 On an existing installation, the next activation migrates `~/.cache/.bun` to the persistent root and leaves a compatibility symlink for old shells and rollback generations. It refuses to overwrite an existing destination. The separate `~/.bun` directory is untouched. Open a fresh login shell after switching to pick up the new environment and PATH.
 
 Before the first activation, sign in to the Mac App Store so the configured `masApps` can be installed. The Neovim configuration, GPG secret key, TX-02 font, Zed, and browsers are intentionally managed outside this repository. `just doctor` checks the Neovim checkout and link, required editor commands, TX-02 font, and Zed installation; it does not verify GPG key availability, browsers, or macOS permissions.
@@ -94,15 +96,15 @@ just doctor
 
 ## Updating
 
-Update the Bun, Grok CLI, and OMP pins to their latest stable releases, and update flake inputs without activating anything:
+Update the Bun and OMP pins to their latest stable releases, and update flake inputs without activating anything:
 
 ```sh
 just update
 ```
 
-The update allows uncommitted changes to `flake.lock`, `pkgs/bun-latest.nix`, `pkgs/grok-cli-latest.nix`, and `pkgs/omp-latest.nix`, but refuses changes to other files. The safety check supports both Jujutsu and ordinary Git clones.
+The update allows uncommitted changes to `flake.lock`, `pkgs/bun-latest.nix`, and `pkgs/omp-latest.nix`, but refuses changes to other files. The safety check supports both Jujutsu and ordinary Git clones.
 
-`just update-bun`, `just update-grok`, and `just update-omp` refresh individual pins. Bun uses an upstream Apple Silicon release with nixpkgs' packaging and Darwin fixups, so it can update even when nixpkgs lags. OMP uses a prebuilt Apple Silicon binary pinned by build ID and SHA-256. Normal rebuilds keep these versions until the pins are updated.
+`just update-bun` and `just update-omp` refresh individual pins. Bun uses an upstream Apple Silicon release with nixpkgs' packaging and Darwin fixups, so it can update even when nixpkgs lags. OMP uses a prebuilt Apple Silicon binary pinned by build ID and SHA-256. Normal rebuilds keep these versions until the pins are updated.
 
 Update tools managed outside Nix:
 
@@ -110,9 +112,9 @@ Update tools managed outside Nix:
 just update-extras
 ```
 
-This updates Bun global packages to latest releases (including Pi and `cf`), npm globals, uv tools, Rust toolchains, Origin, Prime Agent, Amp, Sentry CLI, Pi extensions, Mac App Store apps, and Homebrew packages. Missing commands are skipped. Failures are reported without preventing the other extras from being attempted; the stage exits unsuccessfully if any updater fails. Updates run from `$HOME`, never from the caller's project.
+This updates Bun global packages to latest releases (including Pi and `cf`), npm globals, uv tools, Rust toolchains, Prime Agent, Sentry CLI, Pi extensions, Mac App Store apps, and Homebrew packages. Missing commands are skipped. Failures are reported without preventing the other extras from being attempted; the stage exits unsuccessfully if any updater fails. Updates run from `$HOME`, never from the caller's project.
 
-This does not update source checkouts, Cargo-installed binaries, arbitrary downloaded executables, or independently installed GUI apps such as Zed and browsers. Those retain their own update workflows. Other Nix packages normally follow nixpkgs. Node 24 temporarily uses the official, hash-pinned Apple Silicon 24.22.1 security release, including its bundled libraries. The system Node runtime, Cloudflare CLI completion, and Twilio use this package without rebuilding unrelated tools. It automatically defers to nixpkgs once its Node 24 package reaches 24.22.1 or newer. Bun, Grok, and OMP have independently updated upstream release pins.
+This does not update source checkouts, Cargo-installed binaries, arbitrary downloaded executables, or independently installed GUI apps such as Zed and browsers. Those retain their own update workflows. Other Nix packages normally follow nixpkgs. Node 24 temporarily uses the official, hash-pinned Apple Silicon 24.22.1 security release, including its bundled libraries. The system Node runtime, Cloudflare CLI completion, and Twilio use this package without rebuilding unrelated tools. It automatically defers to nixpkgs once its Node 24 package reaches 24.22.1 or newer. Bun and OMP have independently updated upstream release pins.
 
 Run the full update workflow:
 

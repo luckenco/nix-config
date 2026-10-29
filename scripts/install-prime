@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Home Manager sets DRY_RUN even when its value is empty.
+if [[ -v DRY_RUN ]]; then
+  exit 0
+fi
+
+# Do not discover uv configuration in the caller's project.
+cd "$HOME"
+export UV_TOOL_BIN_DIR="$HOME/.local/bin"
+if [[ ! -x "$UV_TOOL_BIN_DIR/prime" ]]; then
+  uv tool install prime
+fi
+
+# Keep upstream's launcher, runtime setup, and update support together.
+# Never rerun the installer over an existing executable during activation.
+if [[ ! -x "$HOME/.local/bin/prime-agent" ]]; then
+  installer="$(mktemp)"
+  trap 'rm -f "$installer"' EXIT
+  curl -fsSL --proto '=https' --proto-redir '=https' \
+    --connect-timeout 15 --max-time 120 \
+    https://raw.githubusercontent.com/PrimeIntellect-ai/prime-agent/main/install-rust.sh \
+    -o "$installer"
+  PRIME_AGENT_RUST_PREFIX="$HOME/.local" /bin/sh "$installer"
+fi
