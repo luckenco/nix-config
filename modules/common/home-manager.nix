@@ -18,7 +18,7 @@
           };
 
           home.activation.ensureScreenshotDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-            mkdir -p "${config.home.homeDirectory}/Pictures/Screenshots"
+            run mkdir -p "${config.home.homeDirectory}/Pictures/Screenshots"
           '';
         }
       )

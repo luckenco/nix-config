@@ -76,7 +76,8 @@
     taplo
     ruff
     ty
-    typescript
+    typescript # Keep the reference compiler; do not alias tsc to tsrs.
+    (pkgs.callPackage ../../pkgs/tsrs.nix { })
     biome
 
     # System info

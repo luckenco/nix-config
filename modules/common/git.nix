@@ -56,7 +56,6 @@
             "!/Users/${config.system.primaryUser}/.local/bin/origin credential-helper"
           ];
 
-          core.ignorecase = false;
           init.defaultBranch = "main";
           push.autoSetupRemote = true;
           pull.rebase = true;

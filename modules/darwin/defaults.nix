@@ -28,6 +28,12 @@ in
 
   system.defaults.dock = {
     autohide = true;
+    autohide-delay = 0.0;
+    autohide-time-modifier = 0.15;
+    expose-animation-duration = 0.1;
+    launchanim = false;
+    mineffect = "scale";
+    show-process-indicators = true;
     showhidden = true;
     show-recents = false;
     mru-spaces = false;
@@ -38,8 +44,15 @@ in
     AppleShowAllExtensions = true;
     AppleShowAllFiles = true;
     FXPreferredViewStyle = "Nlsv";
+    FXDefaultSearchScope = "SCcf";
+    FXEnableExtensionChangeWarning = false;
     _FXShowPosixPathInTitle = true;
     _FXSortFoldersFirst = true;
+    _FXSortFoldersFirstOnDesktop = true;
+    ShowExternalHardDrivesOnDesktop = false;
+    ShowHardDrivesOnDesktop = false;
+    ShowMountedServersOnDesktop = false;
+    ShowRemovableMediaOnDesktop = false;
     ShowPathbar = true;
     ShowStatusBar = true;
     QuitMenuItem = true;
@@ -50,55 +63,31 @@ in
     SHOWFULLNAME = true;
   };
 
-  system.defaults.CustomSystemPreferences."com.apple.desktopservices" = {
-    DSDontWriteNetworkStores = true;
-    DSDontWriteUSBStores = true;
+  system.defaults.screencapture = {
+    disable-shadow = true;
+    include-date = true;
+    location = "${homeDir}/Pictures/Screenshots";
+    type = "png";
+  };
+
+  system.defaults.screensaver = {
+    askForPassword = true;
+    askForPasswordDelay = 0;
+  };
+
+  # nix-darwin applies these to both built-in and Bluetooth trackpads.
+  system.defaults.trackpad = {
+    Clicking = true;
+    TrackpadRightClick = true;
+    TrackpadThreeFingerDrag = false;
   };
 
   system.defaults.CustomUserPreferences = {
-    "com.apple.dock" = {
-      autohide-delay = 0.0;
-      autohide-time-modifier = 0.15;
-      expose-animation-duration = 0.1;
-      launchanim = false;
-      mineffect = "scale";
-      show-process-indicators = true;
+    "com.apple.desktopservices" = {
+      DSDontWriteNetworkStores = true;
+      DSDontWriteUSBStores = true;
     };
-
-    "com.apple.finder" = {
-      FXDefaultSearchScope = "SCcf";
-      FXEnableExtensionChangeWarning = false;
-      ShowExternalHardDrivesOnDesktop = false;
-      ShowHardDrivesOnDesktop = false;
-      ShowMountedServersOnDesktop = false;
-      ShowRemovableMediaOnDesktop = false;
-      WarnOnEmptyTrash = false;
-      _FXSortFoldersFirstOnDesktop = true;
-    };
-
-    "com.apple.screencapture" = {
-      disable-shadow = true;
-      include-date = true;
-      location = "${homeDir}/Pictures/Screenshots";
-      type = "png";
-    };
-
-    "com.apple.screensaver" = {
-      askForPassword = 1;
-      askForPasswordDelay = 0;
-    };
-
-    "com.apple.AppleMultitouchTrackpad" = {
-      Clicking = true;
-      TrackpadRightClick = true;
-      TrackpadThreeFingerDrag = false;
-    };
-
-    "com.apple.driver.AppleBluetoothMultitouch.trackpad" = {
-      Clicking = true;
-      TrackpadRightClick = true;
-      TrackpadThreeFingerDrag = false;
-    };
+    "com.apple.finder".WarnOnEmptyTrash = false;
   };
   system.stateVersion = 7;
 }

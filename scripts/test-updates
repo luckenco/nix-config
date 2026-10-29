@@ -107,7 +107,7 @@ awk -F '|' -v home="$tmp/home" -v bun="$tmp/globals" \
 
 export TEST_FAIL=0
 rm "$tmp/bin/origin"
-HOME="$tmp/home" BUN_INSTALL="" XDG_CACHE_HOME="$tmp/cache" PATH="$tmp/bin" \
+HOME="$tmp/home" BUN_INSTALL="" XDG_DATA_HOME="$tmp/data" PATH="$tmp/bin" \
   /bin/bash "$repo_root/scripts/update-extras"
-[[ "$(tail -n 1 "$TEST_LOG")" == *"|$tmp/cache/.bun" ]]
+[[ "$(tail -n 1 "$TEST_LOG")" == *"|$tmp/data/bun" ]]
 echo "Update behavior checks passed"

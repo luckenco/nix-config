@@ -31,7 +31,7 @@ the `hosts/` directory.
 
 ## Bootstrap
 
-Install Nix, clone the repository, enter it, and run:
+Install Determinate Nix, clone the repository, enter it, and run:
 
 ```sh
 nix --extra-experimental-features 'nix-command flakes' \
@@ -42,9 +42,13 @@ This obtains Just from the repository's locked Nixpkgs input. If `just` is alrea
 
 If `nh` is already installed, bootstrap uses it. Otherwise it runs the repository's locked nix-darwin with `sudo`.
 
-Home Manager activation attempts to install the Cloudflare CLI (`cf`) through Bun if it is missing. Activation and interactive shells use the same Bun root at `$XDG_CACHE_HOME/.bun` (`~/.cache/.bun` by default). This requires network access on first install; Bun owns the CLI version outside the Nix lock file. Activation also caches its Zsh completion, so shell startup does not run the CLI. Installation or completion failures warn without aborting activation; failed generation preserves any existing completion. Completion refreshes on activation. After updating `cf` through `just update-extras`, run `just switch` to refresh its cached completion.
+Home Manager activation attempts to install the Cloudflare CLI (`cf`) through Bun if it is missing. Activation and interactive shells use the same persistent Bun root at `$XDG_DATA_HOME/bun` (`~/.local/share/bun` by default), with downloads cached separately at `$XDG_CACHE_HOME/bun`. This requires network access on first install; Bun owns the CLI version outside the Nix lock file. Activation also caches its Zsh completion, so shell startup does not run the CLI. Installation or completion failures warn without aborting activation; failed generation preserves any existing completion. Completion refreshes on activation. After updating `cf` through `just update-extras`, run `just switch` to refresh its cached completion.
 
-Before the first activation, sign in to the Mac App Store so the configured `masApps` can be installed. The Neovim configuration, GPG secret key, TX-02 font, Zed, and browsers are intentionally managed outside this repository; `just doctor` reports missing external dependencies after activation.
+On an existing installation, the next activation migrates `~/.cache/.bun` to the persistent root and leaves a compatibility symlink for old shells and rollback generations. It refuses to overwrite an existing destination. The separate `~/.bun` directory is untouched. Open a fresh login shell after switching to pick up the new environment and PATH.
+
+Before the first activation, sign in to the Mac App Store so the configured `masApps` can be installed. The Neovim configuration, GPG secret key, TX-02 font, Zed, and browsers are intentionally managed outside this repository. `just doctor` checks the Neovim checkout and link, required editor commands, TX-02 font, and Zed installation; it does not verify GPG key availability, browsers, or macOS permissions.
+
+For a replacement machine, see the [recovery checklist and external-tool inventory](docs/recovery.md).
 
 ### Objective-See apps
 
@@ -174,3 +178,5 @@ Brave, Chrome, and Helium are installed and updated outside Nix.
 Zed is installed as a macOS app, while its settings are managed declaratively.
 
 The Neovim configuration lives in the standalone `~/Code/nvim` repository. Home Manager links it into `~/.config/nvim`. `just doctor` verifies that link and the external tools the editor expects.
+
+Neovim uses the hash-pinned tsrs compiler/language server from `pkgs/tsrs.nix`, without its opt-in fast mode. The package includes its matching standard library declarations; TypeScript's `tsc` remains installed as a reference compiler, not aliased to tsrs. Projects keep their own TypeScript dependencies. This tsrs release targets TypeScript 7.1 beta and has [documented compatibility gaps](https://github.com/oxc-project/tsrs/blob/v0.20.1/docs/DEFAULTS.md). Its version and hash are updated manually in `pkgs/tsrs.nix`, followed by `just check`; `just update` does not advance this pin.

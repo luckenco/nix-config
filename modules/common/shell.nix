@@ -19,9 +19,25 @@ in
           prefix=${hmConfig.home.homeDirectory}/.local
         '';
 
+        home.activation.migrateBun = lib.hm.dag.entryBetween [ "ensureCf" ] [ "writeBoundary" ] ''
+          old_bun="${hmConfig.xdg.cacheHome}/.bun"
+          new_bun="${hmConfig.xdg.dataHome}/bun"
+          if [ -d "$old_bun" ] && [ ! -L "$old_bun" ]; then
+            if [ -e "$new_bun" ] || [ -L "$new_bun" ]; then
+              errorEcho "Both $old_bun and $new_bun exist; reconcile Bun installations before activating."
+              exit 1
+            fi
+            run mkdir -p "${hmConfig.xdg.dataHome}"
+            run mv -T "$old_bun" "$new_bun"
+            # Preserve running tools, old shells, and rollback generations.
+            run ln -s "$new_bun" "$old_bun"
+          fi
+        '';
+
         # Bun owns cf; installation and completion are best-effort conveniences.
         home.activation.ensureCf = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          export BUN_INSTALL="${hmConfig.xdg.cacheHome}/.bun"
+          export BUN_INSTALL="${hmConfig.xdg.dataHome}/bun"
+          export BUN_INSTALL_CACHE_DIR="${hmConfig.xdg.cacheHome}/bun"
           bun_bin="$BUN_INSTALL/bin"
           if [ ! -x "$bun_bin/cf" ]; then
             run ${pkgs.bun}/bin/bun install --global cf || warnEcho "Failed to install cf; continuing activation."
@@ -61,7 +77,8 @@ in
           };
 
           sessionVariables = {
-            BUN_INSTALL = "${hmConfig.xdg.cacheHome}/.bun";
+            BUN_INSTALL = "${hmConfig.xdg.dataHome}/bun";
+            BUN_INSTALL_CACHE_DIR = "${hmConfig.xdg.cacheHome}/bun";
             LANG = "en_US.UTF-8";
             EDITOR = "nvim";
             VISUAL = "nvim";
@@ -165,12 +182,12 @@ in
               fallback_paths+=("/opt/homebrew/bin" "/opt/homebrew/sbin")
             fi
             fallback_paths+=(
-              "${hmConfig.xdg.cacheHome}/.bun/bin"
+              "${hmConfig.xdg.dataHome}/bun/bin"
               "$HOME/.bun/bin"
               "$HOME/.orbstack/bin"
             )
 
-            path_remove "''${user_paths[@]}" "''${fallback_paths[@]}"
+            path_remove "${hmConfig.xdg.cacheHome}/.bun/bin" "''${user_paths[@]}" "''${fallback_paths[@]}"
             path_prepend_existing "''${user_paths[@]}"
             path_append_after_nix_existing "''${fallback_paths[@]}"
 

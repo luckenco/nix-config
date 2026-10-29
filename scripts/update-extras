@@ -3,7 +3,8 @@ set -euo pipefail
 
 # Avoid caller-directory config discovery; inherited environment is unchanged.
 cd "$HOME"
-export BUN_INSTALL="${BUN_INSTALL:-${XDG_CACHE_HOME:-$HOME/.cache}/.bun}"
+export BUN_INSTALL="${BUN_INSTALL:-${XDG_DATA_HOME:-$HOME/.local/share}/bun}"
+export BUN_INSTALL_CACHE_DIR="${BUN_INSTALL_CACHE_DIR:-${XDG_CACHE_HOME:-$HOME/.cache}/bun}"
 failed=()
 
 update() {
